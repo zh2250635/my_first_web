@@ -5,14 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/index.css">
     <script src="/js/index.js"></script>
+    <script src="/js/load.js"></script>
     <title>控制面板</title>
 </head>
 <body>
     <div name="header" >
-        <h1 id="tittle">控制面板</h1>
-        <form action="/logout" method="post" id="logout_form">
-            <input type="submit" value="注销" id="logout">
-        </form>
+        <h1 id="title">控制面板</h1>
+        <button id="logout" onclick="logout()">登出</button>
+        <div id="az_account" name="container" >
+            <h1 id="az_account">账号池</h1>
+            <table id="account_info">
+                <tr>
+                    <th>Tag</th>
+                    <th>状态</th>
+                    <th>订阅数</th>
+                    <th>操作</th>
+                </tr>
+            </table>
+        </div>
+
+        <div id="chooice" name="container" >
+            <h1 id="chooice">选项</h1>
+            <table id="accounts">
+                <tr>
+                    <th>选项名称</th>
+                    <th>描述</th>
+                    <th>操作</th>
+                </tr>
+            </table>
+        </div>
+        
+        <script>
+
+        </script>
     </div>
 </body>
 </html>
