@@ -1,0 +1,19 @@
+{
+  "name": "my_first_web",
+  "version": "1.0.0",
+  "description": "我的第一个网页!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zh2250635/my_first_web.git"
+  },
+  "author": "zhtec",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zh2250635/my_first_web/issues"
+  },
+  "homepage": "https://github.com/zh2250635/my_first_web#readme"
+}
