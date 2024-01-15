@@ -6,6 +6,9 @@ require('dotenv').config();
 const port = 3000;
 const loginRouter = require('./api/login.js');
 const logoutRouter = require('./api/logout.js');
+const getAccountRouter = require('./api/az_account.js').use(auth);
+const oneapiRouter = require('./api/oneapi.js').use(auth);
+const oneapiRouter2 = require('./api/oneChannels.js').use(auth);
 
 function auth(req, res, next) {
     const token = req.cookies.jwt;
@@ -34,6 +37,9 @@ app.use(express.json()); // 用于解析JSON请求体
 app.use(express.urlencoded({ extended: true })); // 用于解析表单数据
 app.use('/api/login', loginRouter); // 使用登录路由
 app.use('/logout', logoutRouter); // 使用登出路由
+app.use('/api/az_account', getAccountRouter); // 使用获取账号信息路由
+app.use('/api/oneapi', oneapiRouter); // 使用获取oneapi信息路由
+app.use('/api/oneChannels', oneapiRouter2); // 使用获取oneapi信息路由
 
 // 为静态文件（如HTML、CSS、JavaScript文件）设置一个目录
 app.use(express.static('public'));

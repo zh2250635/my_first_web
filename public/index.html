@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="/css/index.css">
     <script src="/js/index.js"></script>
     <script src="/js/load.js"></script>
+    <script src="js/handeAccountOps.js"></script>
+    <script src="js/handleOneapiOps.js"></script>
     <title>控制面板</title>
 </head>
 <body>
@@ -17,27 +19,68 @@
             <table id="account_info">
                 <tr>
                     <th>Tag</th>
-                    <th>状态</th>
+                    <th>使用状态</th>
                     <th>订阅数</th>
-                    <th>操作</th>
+                    <th>权限</th>
+                    <th>是否保留</th>
+                    <th>账号状态</th>
+                    <th>选择</th>
                 </tr>
             </table>
+            <div class="buttons">
+                <button onclick="deleteAccounts(this)">删除</button>
+                <button onclick="retain(this)">保留</button>
+                <button onclick="checkPreview(this)">检查权限</button>
+                <button onclick="checkPreview(this)">检查账号</button>
+                <button onclick="apply(this)">申请</button>
+                <button onclick="deploy(this)">部署</button>
+            </div>
         </div>
 
-        <div id="chooice" name="container" >
-            <h1 id="chooice">选项</h1>
-            <table id="accounts">
+        <div id="oneapi_req" name="container" >
+            <h1 id="oneapi_req">oneapi请求信息</h1>
+            <form action="/api/oneapi" method="post" name="oneapi_form">
+                <div>
+                    <label for="oneapi" style="width: 100px;">模型:</label>
+                    <select id="oneapi" name="oneapi" required>
+                        <option value="gpt-4-32k-1106-preview" selected>gpt-4-32k-1106-preview</option>
+                        <option value="gpt-4-32k">gpt-4-32k</option>
+                        <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                    </select>
+                    <button type="submit">查询</button>
+                </div>
+            </form>
+            
+            <div class="info">
+                <h2 id="rpm">RPM: ---</h2>
+                <h2 id="tpm">TPM: ---</h2>
+                <h2 id="dpm">上一分钟美金: ---</h2>
+            </div>
+        </div>
+
+        <div name="container" id="oneapi_channels">
+            <h1 id="oneapi_channels">oneapi通道</h1>
+            <table id="oneapi_channels_info">
                 <tr>
-                    <th>选项名称</th>
-                    <th>描述</th>
-                    <th>操作</th>
-                </tr>
+                    <th>分组名称</th>
+                    <th>组内数量</th>
+                    <th>组内消耗</th>
+                    <th>状态</th>
+                    <th>优先级</th>
+                    <th>权重(128k)</th>
+                    <th>创建时间</th>
+                    <th>选择</th>
             </table>
+            <div class="buttons">
+                <button onclick="refresh(this)">刷新</button>
+                <button onclick="lower(this)">降低优先级</button>
+                <button onclick="raise(this)">提高优先级</button>
+                <button onclick="deleteChannels(this)">删除</button>
+            </div>
         </div>
-        
-        <script>
-
-        </script>
+    </div>
+    <div id="message">
+        content33333333333333333
     </div>
 </body>
 </html>

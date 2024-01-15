@@ -11,6 +11,31 @@ body{
     height: 500px;
     background-color: #f5f5f5;
 }
+
+#message{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: auto;
+    padding: 10px;
+    background-color: aquamarine;
+    color: #f5f5f5;
+    text-align: center;
+    border-radius: 40px;
+    font-size: 25px;
+    height: 30px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    display: none;
+    opacity: 0;
+}
+
+#message.show {
+    opacity: 1;
+    display: block;
+}
+
 #logout{
     position: absolute;
     top: 0;
@@ -45,7 +70,7 @@ h1 {
 div[name='container'] {
     overflow: auto; /* 添加滚动条如果内容太大 */
     background-color: #ffff;
-    width: 500px;
+    width: auto;
     height: auto;
     border-radius: 20px;
     box-sizing: border-box;
@@ -62,16 +87,50 @@ div[name='container'] > div {
 
 div[name='container'] > table {
     width: 100%;
-    border-collapse: collapse; /* 确保边框紧凑 */
+    border-collapse:collapse; /* 表格边框合并 */
     text-align: center;
 }
 
-div[name='container'] > table > tr > td {
-    padding: 8px; /* 单元格填充 */
-    border: 1px solid #ddd; /* 单元格边框 */
+div[name='container'] > table th {
+    border: 1px solid #bbb4bf80;
 }
 
-div[name='container'] > table > th {
-    background-color: #f2f2f2; /* 表头背景色 */
-    color: black;
+div[name='container'] > table td {
+    border: 1px solid #bbb4bf80;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+div[name='container'] > table tr:hover {
+    background-color: #f5f5f5;
+}
+
+div[name='container'] > table input[type="checkbox"] {
+    transform: scale(1.5);
+}
+
+div[name='container'] > .buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    border-top: 1px solid #ccc;    /* 边框 */
+}
+
+div[name='container'] > .buttons button {
+    background-color: #007BFF; /* 按钮背景色 */
+    color: white; /* 按钮文字颜色 */
+    padding: 10px 20px; /* 按钮内边距 */
+    border: none; /* 移除边框 */
+    border-radius: 5px; /* 圆角边框 */
+    cursor: pointer; /* 鼠标悬停时的光标形状 */
+    font-size: 1em; /* 字体大小 */
+    transition: background-color 0.3s ease; /* 背景颜色过渡效果 */
+    margin: 5px;
+}
+
+div[name='container'] > .buttons > button:hover {
+    background-color: #0056b3; /* 鼠标悬停时的背景颜色 */
 }
