@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/login.css">
+    <script src="/js/login.js"></script>
+    <title>控制面板</title>
+</head>
+<body>
+    <div name="header" >
+        <h1 id="tittle">控制面板</h1>
+        <div name="login_container">
+            <form action="/api/login" method="post" name="login_form">
+                <div>
+                    <label for="username">用户:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div>
+                    <label for="password">密码:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div>
+                    <button type="submit">登录</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
