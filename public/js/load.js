@@ -55,8 +55,45 @@ function get_account_info() {
     });
 }
 
+function load_oneapi_channels() {
+    // 从localstorage中读取数据
+    var data = JSON.parse(localStorage.getItem('oneapi_channels_imformation_cache'));
+    // 清除表格中的数据(除了表头)
+    table = document.getElementById('oneapi_channels_info');
+    while (table.rows.length > 1) {
+        table.deleteRow(1);
+    }
+    // 重新加载数据
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].modified_name.startsWith('az-')) {
+            continue;
+        }
+        let row = table.insertRow();
+        let name_cell = row.insertCell();
+        let count_cell = row.insertCell();
+        let total_used_quota_cell = row.insertCell();
+        let overall_status_cell = row.insertCell();
+        let max_priority_cell = row.insertCell();
+        let total_weight_cell = row.insertCell();
+        let created_time_cell = row.insertCell();
+        let checkbox_cell = row.insertCell();
+        name_cell.innerHTML = data[i].modified_name;
+        count_cell.innerHTML = data[i].count;
+        total_used_quota_cell.innerHTML = data[i].total_used_quota;
+        overall_status_cell.innerHTML = data[i].overall_status;
+        max_priority_cell.innerHTML = data[i].max_priority;
+        total_weight_cell.innerHTML = data[i].total_weight;
+        created_time_cell.innerHTML = data[i].created_time;
+        if (data[i].modified_name == '总计：非禁用分组数量') {
+            checkbox_cell.innerHTML = '';
+        }else{
+            checkbox_cell.innerHTML = '<input type="checkbox" name="oneapi_channels" value="'+data[i].modified_name+'">';
+        }
+    }
+}
 function test() {
     get_account_info();
+    load_oneapi_channels();
 }
 
 window.addEventListener('load', () => {

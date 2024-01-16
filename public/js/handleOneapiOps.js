@@ -79,6 +79,8 @@ function refresh(){
             while (table.rows.length > 1) {
                 table.deleteRow(1);
             }
+            //将结果保存到localstorage
+            localStorage.setItem('oneapi_channels_imformation_cache', JSON.stringify(data));
             // 重新加载数据
             for (let i = 0; i < data.length; i++) {
                 if (data[i].modified_name.startsWith('az-')) {
