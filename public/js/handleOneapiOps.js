@@ -18,6 +18,7 @@ function add_listener_to_oneapi_form() {
             // 如果返回状态码为200，表示请求成功
             if (response.status === 200) {
                 var json = response.json();
+                
                 return json;
             }else {
                 // 否则，返回错误信息
@@ -108,6 +109,46 @@ function refresh(){
                     checkbox_cell.innerHTML = '<input type="checkbox" name="oneapi_channels" value="'+data[i].modified_name+'">';
                 }
             }
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
+function deleteChannels(){
+    // 获取选择的通道名称
+    let names = get_select_names();
+    if (names.length == 0) {
+        alert('请选择要删除的通道');
+        return;
+    }
+    if(!confirm(`确定要删除${names}吗？`)){
+        return;
+    }
+    // 发送删除请求
+    fetch('/api/oneChannels', {
+        method: 'DELETE',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({names: names}),
+    }).then((response) => {
+        // 如果返回状态码为200，表示请求成功
+        if (response.status === 200) {
+            var json = response.json();
+            return json;
+        }else {
+            // 否则，返回错误信息
+            return response.text();
+        }
+    }).then((data) => {
+        // 如果返回的是JSON数据，表示请求成功
+        if (typeof(data) === 'object') {
+            alert('删除成功');
+            refresh();
+        }else{
+            alert(data);
         }
     }).catch((err) => {
         console.log(err);

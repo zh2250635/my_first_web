@@ -86,5 +86,46 @@ router.get('/', (req, res) => {
     connection.end();
 });
 
+router.delete('/', (req, res) => {
+    function connect_db() {
+        return mysql.createConnection({
+            host: process.env.ONE_DB_HOST,
+            user: process.env.ONE_DB_USER,
+            password: process.env.ONE_DB_PASSWD,
+            database: process.env.ONE_DB_NAME,
+        });
+    }
+
+    let connection = connect_db();
+
+    let names = req.body.names;
+    if (!names || names.length === 0) {
+        res.status(400).send('没有选择要删除的通道');
+        return;
+    }
+
+    let nameArray;
+    if (Array.isArray(names)) {
+        nameArray = names.map(name => `${name}%`);
+    } else {
+        nameArray = names.split(',').map(name => `${name}%`);
+    }
+
+    console.log(nameArray);
+
+    for (let i = 0; i < nameArray.length; i++) {
+        // 删除channels表中的记录
+        let sql = `DELETE FROM channels WHERE name LIKE ?`;
+        connection.query(sql, nameArray[i], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('数据库删除失败');
+            }
+        });
+    }
+    res.status(200).send('删除成功');
+
+    connection.end();
+});
 
 module.exports = router;

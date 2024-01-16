@@ -68,7 +68,7 @@ h1 {
 }
 
 div[name='container'] {
-    overflow: auto; /* 添加滚动条如果内容太大 */
+    overflow: auto; 
     background-color: #ffff;
     width: auto;
     height: auto;
@@ -133,4 +133,19 @@ div[name='container'] > .buttons button {
 
 div[name='container'] > .buttons > button:hover {
     background-color: #0056b3; /* 鼠标悬停时的背景颜色 */
+}
+
+
+@media screen and (max-width: 600px) {
+    /* 让container自动对齐 */
+    div[name='container'] {
+        max-width: 100% !important;
+        max-height: 100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        position: relative !important;
+        padding: 0;
+        margin: 0;
+        border-radius: 0;
+    }
 }
