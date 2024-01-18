@@ -1,0 +1,525 @@
+[
+    {
+        "id": 1,
+        "name": "australiaeast",
+        "display": "AUSTRALIAEAST",
+        "models": [
+            {
+                "name": "text-embedding-ada-002",
+                "version": "2",
+                "deployName": "text-embedding-ada-002",
+                "capacity": 350,
+                "oneApiTag": "text",
+                "oneApiModels": "text-embedding-ada-002",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "0613",
+                "deployName": "gpt-35-turbo",
+                "capacity": 300,
+                "oneApiTag": "4k",
+                "oneApiModels": "gpt-3.5-turbo,gpt-3.5-turbo-0301,gpt-3.5-turbo-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo-16k",
+                "version": "0613",
+                "deployName": "gpt-35-turbo-16k",
+                "capacity": 300,
+                "oneApiTag": "16k",
+                "oneApiModels": "gpt-3.5-turbo-16k,gpt-3.5-turbo-16k-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "1106",
+                "deployName": "gpt-35-turbo-1106",
+                "capacity": 120,
+                "oneApiTag": "1106",
+                "oneApiModels": "gpt-3.5-turbo-1106",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-4",
+                "version": "0613",
+                "deployName": "gpt-4",
+                "capacity": 40,
+                "oneApiTag": "8k",
+                "oneApiModels": "gpt-4,gpt-4-0314,gpt-4-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            },
+            {
+                "name": "gpt-4",
+                "version": "1106-Preview",
+                "deployName": "gpt-4-32k-1106-preview",
+                "capacity": 80,
+                "oneApiTag": "128k",
+                "oneApiModels": "gpt-4-32k-1106-preview,gpt-4-1106-preview",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            },
+            {
+                "name": "gpt-4-32k",
+                "version": "0613",
+                "deployName": "gpt-4-32k",
+                "capacity": 80,
+                "oneApiTag": "32k",
+                "oneApiModels": "gpt-4-32k,gpt-4-32k-0314,gpt-4-32k-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "canadaeast",
+        "display": "CANADAEAST",
+        "models": [
+            {
+                "name": "text-embedding-ada-002",
+                "version": "2",
+                "deployName": "text-embedding-ada-002",
+                "capacity": 350,
+                "oneApiTag": "text",
+                "oneApiModels": "text-embedding-ada-002",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "0613",
+                "deployName": "gpt-35-turbo",
+                "capacity": 300,
+                "oneApiTag": "4k",
+                "oneApiModels": "gpt-3.5-turbo,gpt-3.5-turbo-0301,gpt-3.5-turbo-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo-16k",
+                "version": "0613",
+                "deployName": "gpt-35-turbo-16k",
+                "capacity": 300,
+                "oneApiTag": "16k",
+                "oneApiModels": "gpt-3.5-turbo-16k,gpt-3.5-turbo-16k-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "1106",
+                "deployName": "gpt-35-turbo-1106",
+                "capacity": 120,
+                "oneApiTag": "1106",
+                "oneApiModels": "gpt-3.5-turbo-1106",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-4",
+                "version": "0613",
+                "deployName": "gpt-4",
+                "capacity": 40,
+                "oneApiTag": "8k",
+                "oneApiModels": "gpt-4,gpt-4-0314,gpt-4-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            },
+            {
+                "name": "gpt-4",
+                "version": "1106-Preview",
+                "deployName": "gpt-4-32k-1106-preview",
+                "capacity": 80,
+                "oneApiTag": "128k",
+                "oneApiModels": "gpt-4-32k-1106-preview,gpt-4-1106-preview",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            },
+            {
+                "name": "gpt-4-32k",
+                "version": "0613",
+                "deployName": "gpt-4-32k",
+                "capacity": 80,
+                "oneApiTag": "32k",
+                "oneApiModels": "gpt-4-32k,gpt-4-32k-0314,gpt-4-32k-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "name": "eastus2",
+        "display": "EASTUS2",
+        "models": [
+            {
+                "name": "text-embedding-ada-002",
+                "version": "2",
+                "deployName": "text-embedding-ada-002",
+                "capacity": 350,
+                "oneApiTag": "text",
+                "oneApiModels": "text-embedding-ada-002",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "0613",
+                "deployName": "gpt-35-turbo",
+                "capacity": 300,
+                "oneApiTag": "4k",
+                "oneApiModels": "gpt-3.5-turbo,gpt-3.5-turbo-0301,gpt-3.5-turbo-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo-16k",
+                "version": "0613",
+                "deployName": "gpt-35-turbo-16k",
+                "capacity": 300,
+                "oneApiTag": "16k",
+                "oneApiModels": "gpt-3.5-turbo-16k,gpt-3.5-turbo-16k-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-4",
+                "version": "1106-Preview",
+                "deployName": "gpt-4-32k-1106-preview",
+                "capacity": 80,
+                "oneApiTag": "128k",
+                "oneApiModels": "gpt-4-32k-1106-preview,gpt-4-1106-preview",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "name": "francecentral",
+        "display": "FRANCECENTRAL",
+        "models": [
+            {
+                "name": "text-embedding-ada-002",
+                "version": "2",
+                "deployName": "text-embedding-ada-002",
+                "capacity": 240,
+                "oneApiTag": "text",
+                "oneApiModels": "text-embedding-ada-002",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "0613",
+                "deployName": "gpt-35-turbo",
+                "capacity": 240,
+                "oneApiTag": "4k",
+                "oneApiModels": "gpt-3.5-turbo,gpt-3.5-turbo-0301,gpt-3.5-turbo-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo-16k",
+                "version": "0613",
+                "deployName": "gpt-35-turbo-16k",
+                "capacity": 240,
+                "oneApiTag": "16k",
+                "oneApiModels": "gpt-3.5-turbo-16k,gpt-3.5-turbo-16k-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "1106",
+                "deployName": "gpt-35-turbo-1106",
+                "capacity": 120,
+                "oneApiTag": "1106",
+                "oneApiModels": "gpt-3.5-turbo-1106",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-4",
+                "version": "0613",
+                "deployName": "gpt-4",
+                "capacity": 20,
+                "oneApiTag": "8k",
+                "oneApiModels": "gpt-4,gpt-4-0314,gpt-4-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            },
+            {
+                "name": "gpt-4",
+                "version": "1106-Preview",
+                "deployName": "gpt-4-32k-1106-preview",
+                "capacity": 80,
+                "oneApiTag": "128k",
+                "oneApiModels": "gpt-4-32k-1106-preview,gpt-4-1106-preview",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            },
+            {
+                "name": "gpt-4-32k",
+                "version": "0613",
+                "deployName": "gpt-4-32k",
+                "capacity": 60,
+                "oneApiTag": "32k",
+                "oneApiModels": "gpt-4-32k,gpt-4-32k-0314,gpt-4-32k-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            }
+        ]
+    },
+    {
+        "id": 12,
+        "name": "norwayeast",
+        "display": "NORWAYEAST",
+        "models": [
+            {
+                "name": "text-embedding-ada-002",
+                "version": "2",
+                "deployName": "text-embedding-ada-002",
+                "capacity": 350,
+                "oneApiTag": "text",
+                "oneApiModels": "text-embedding-ada-002",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-4",
+                "version": "1106-Preview",
+                "deployName": "gpt-4-32k-1106-preview",
+                "capacity": 150,
+                "oneApiTag": "128k",
+                "oneApiModels": "gpt-4-32k-1106-preview,gpt-4-1106-preview",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            }
+        ]
+    },
+    {
+        "id": 15,
+        "name": "southindia",
+        "display": "SOUTHINDIA",
+        "models": [
+            {
+                "name": "text-embedding-ada-002",
+                "version": "2",
+                "deployName": "text-embedding-ada-002",
+                "capacity": 350,
+                "oneApiTag": "text",
+                "oneApiModels": "text-embedding-ada-002",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "1106",
+                "deployName": "gpt-35-turbo-1106",
+                "capacity": 120,
+                "oneApiTag": "1106",
+                "oneApiModels": "gpt-3.5-turbo-1106",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-4",
+                "version": "1106-Preview",
+                "deployName": "gpt-4-32k-1106-preview",
+                "capacity": 150,
+                "oneApiTag": "128k",
+                "oneApiModels": "gpt-4-32k-1106-preview,gpt-4-1106-preview",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            }
+        ]
+    },
+    {
+        "id": 16,
+        "name": "swedencentral",
+        "display": "SWEDENCENTRAL",
+        "models": [
+            {
+                "name": "dall-e-3",
+                "version": "3.0",
+                "deployName": "dall-e-3",
+                "capacity": 2,
+                "oneApiTag": "d3",
+                "oneApiModels": "dall-e-3",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "text-embedding-ada-002",
+                "version": "2",
+                "deployName": "text-embedding-ada-002",
+                "capacity": 350,
+                "oneApiTag": "text",
+                "oneApiModels": "text-embedding-ada-002",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "0613",
+                "deployName": "gpt-35-turbo",
+                "capacity": 300,
+                "oneApiTag": "4k",
+                "oneApiModels": "gpt-3.5-turbo,gpt-3.5-turbo-0301,gpt-3.5-turbo-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo-16k",
+                "version": "0613",
+                "deployName": "gpt-35-turbo-16k",
+                "capacity": 300,
+                "oneApiTag": "16k",
+                "oneApiModels": "gpt-3.5-turbo-16k,gpt-3.5-turbo-16k-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "1106",
+                "deployName": "gpt-35-turbo-1106",
+                "capacity": 120,
+                "oneApiTag": "1106",
+                "oneApiModels": "gpt-3.5-turbo-1106",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-4",
+                "version": "0613",
+                "deployName": "gpt-4",
+                "capacity": 40,
+                "oneApiTag": "8k",
+                "oneApiModels": "gpt-4,gpt-4-0314,gpt-4-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            },
+            {
+                "name": "gpt-4",
+                "version": "1106-Preview",
+                "deployName": "gpt-4-32k-1106-preview",
+                "capacity": 150,
+                "oneApiTag": "128k",
+                "oneApiModels": "gpt-4-32k-1106-preview,gpt-4-1106-preview",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            },
+            {
+                "name": "gpt-4-32k",
+                "version": "0613",
+                "deployName": "gpt-4-32k",
+                "capacity": 80,
+                "oneApiTag": "32k",
+                "oneApiModels": "gpt-4-32k,gpt-4-32k-0314,gpt-4-32k-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            }
+        ]
+    },
+    {
+        "id": 18,
+        "name": "uksouth",
+        "display": "UKSOUTH",
+        "models": [
+            {
+                "name": "text-embedding-ada-002",
+                "version": "2",
+                "deployName": "text-embedding-ada-002",
+                "capacity": 350,
+                "oneApiTag": "text",
+                "oneApiModels": "text-embedding-ada-002",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "0613",
+                "deployName": "gpt-35-turbo",
+                "capacity": 240,
+                "oneApiTag": "4k",
+                "oneApiModels": "gpt-3.5-turbo,gpt-3.5-turbo-0301,gpt-3.5-turbo-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo-16k",
+                "version": "0613",
+                "deployName": "gpt-35-turbo-16k",
+                "capacity": 240,
+                "oneApiTag": "16k",
+                "oneApiModels": "gpt-3.5-turbo-16k,gpt-3.5-turbo-16k-0613",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "1106",
+                "deployName": "gpt-35-turbo-1106",
+                "capacity": 120,
+                "oneApiTag": "1106",
+                "oneApiModels": "gpt-3.5-turbo-1106",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-4",
+                "version": "1106-Preview",
+                "deployName": "gpt-4-32k-1106-preview",
+                "capacity": 80,
+                "oneApiTag": "128k",
+                "oneApiModels": "gpt-4-32k-1106-preview,gpt-4-1106-preview",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            }
+        ]
+    },
+    {
+        "id": 20,
+        "name": "westus",
+        "display": "WESTUS",
+        "models": [
+            {
+                "name": "text-embedding-ada-002",
+                "version": "2",
+                "deployName": "text-embedding-ada-002",
+                "capacity": 350,
+                "oneApiTag": "text",
+                "oneApiModels": "text-embedding-ada-002",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-35-turbo",
+                "version": "1106",
+                "deployName": "gpt-35-turbo-1106",
+                "capacity": 120,
+                "oneApiTag": "1106",
+                "oneApiModels": "gpt-3.5-turbo-1106",
+                "oneApiMap": "",
+                "onePaiGroup": "$group35"
+            },
+            {
+                "name": "gpt-4",
+                "version": "1106-Preview",
+                "deployName": "gpt-4-32k-1106-preview",
+                "capacity": 80,
+                "oneApiTag": "128k",
+                "oneApiModels": "gpt-4-32k-1106-preview,gpt-4-1106-preview",
+                "oneApiMap": "",
+                "onePaiGroup": "$group40"
+            }
+        ]
+    }
+]

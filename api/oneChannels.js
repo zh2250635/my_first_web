@@ -123,7 +123,7 @@ router.delete('/', (req, res) => {
             }
         });
     }
-    res.status(200).send('删除成功');
+    res.status(200).json({msg: '删除成功'})
 
     connection.end();
 });

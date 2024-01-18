@@ -91,6 +91,16 @@ function retain(){
     }
 }
 
+function refreshAccount(){
+    // 找到表
+    table = document.getElementById('account_info');
+    // 清除表格中的数据(除了表头)
+    while (table.rows.length > 1) {
+        table.deleteRow(1);
+    }
+    get_account_info()
+}
+
 function get_select_tags(){
     let container = document.getElementById('az_account');
     // 找到container下所有的input元素
@@ -104,7 +114,161 @@ function get_select_tags(){
     return tags.join(',');
 }
 
-function show_message(content) {
+function checkPreview(){
+    let preview_tags = get_select_tags();
+    // 如果preview_tags为空, 则发出提示
+    if (preview_tags == '') {
+        alert('请选择要检查权限的账号');
+        return;
+    }
+    // 如果大于1个账号，则发出提示
+    if (preview_tags.split(',').length > 1) {
+        alert('放过我吧，一次只能检查一个账号');
+        return;
+    }
+    show_message('检查中，不要刷新。。。')
+    // 发送请求
+    fetch('/api/az_account/preview', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({preview_tag: preview_tags}),
+    }).then((response) => {
+        // 如果返回状态码为200，表示请求成功
+        if (response.status === 200) {
+            var json = response.json();
+            return json;
+        }else {
+            // 否则，返回错误信息
+            return response.text();
+        }
+    }).then((data) => {
+        // 如果返回的是JSON数据，表示请求成功
+        if (typeof(data) === 'object') {
+            // 如果检查成功
+            if (data.code == 1) {
+                // 显示检查结果
+                alert(data.msg);
+            }else{
+                // 显示检查结果
+                alert(data.msg);
+            }
+        }else{
+            alert(data);
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
+function checkAlive(){
+    let alive_tags = get_select_tags();
+    // 如果alive_tags为空, 则发出提示
+    if (alive_tags == '') {
+        alert('请选择要检查权限的账号');
+        return;
+    }
+    // 如果大于1个账号，则发出提示
+    if (alive_tags.split(',').length > 1) {
+        alert('放过我吧，一次只能检查一个账号');
+        return;
+    }
+    show_message('检查中，不要刷新。。。')
+    // 发送请求
+
+    fetch('/api/az_account/alive', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({alive_tag: alive_tags}),
+    }).then((response) => {
+        // 如果返回状态码为200，表示请求成功
+        if (response.status === 200) {
+            var json = response.json();
+            return json;
+        }else {
+            // 否则，返回错误信息
+            return response.text();
+        }
+    }).then((data) => {
+        // 如果返回的是JSON数据，表示请求成功
+        if (typeof(data) === 'object') {
+            // 如果检查成功
+            if (data.code == 1) {
+                // 显示检查结果
+                alert(data.msg);
+            }else{
+                // 显示检查结果
+                alert(data.msg);
+            }
+        }else{
+            alert(data);
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
+function apply(){
+    let apply_tags = get_select_tags();
+    // 如果apply_tags为空, 则发出提示
+    if (apply_tags == '') {
+        alert('请选择要申请权限的账号');
+        return;
+    }
+    // 如果大于1个账号，则发出提示
+    if (apply_tags.split(',').length > 1) {
+        alert('放过我吧，一次只能申请一个账号');
+        return;
+    }
+    show_message('申请中，不要刷新。。。')
+
+    // 要求输入邮箱，默认为1314@zhtec.xyz
+    let email = prompt('请输入邮箱', '1314520@zhtec.xyz');
+    if (email == null) {
+        return;
+    }
+    // 发送请求
+    fetch('/api/az_account/apply', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({apply_tag: apply_tags, mail: email}),
+    }).then((response) => {
+        // 如果返回状态码为200，表示请求成功
+        if (response.status === 200) {
+            var json = response.json();
+            return json;
+        }else {
+            // 否则，返回错误信息
+            return response.text();
+        }
+    }).then((data) => {
+        // 如果返回的是JSON数据，表示请求成功
+        if (typeof(data) === 'object') {
+            // 如果检查成功
+            if (data.code == 1) {
+                // 显示检查结果
+                alert(data.msg);
+            }else{
+                // 显示检查结果
+                alert(data.msg);
+            }
+        }else{
+            alert(data);
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
+async function show_message(content) {
     var message = document.getElementById('message');
     message.textContent = content;
     // 获取页面的宽度（不含滚动条）

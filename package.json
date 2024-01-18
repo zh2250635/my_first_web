@@ -17,10 +17,18 @@
   },
   "homepage": "https://github.com/zh2250635/my_first_web#readme",
   "dependencies": {
+    "@azure/arm-cognitiveservices": "^7.5.0",
+    "@azure/arm-features": "^3.1.0",
+    "@azure/arm-resources": "^5.2.0",
+    "@azure/arm-subscriptions": "^5.1.0",
+    "@azure/identity": "^4.0.0",
+    "axios": "^1.6.5",
+    "child_process": "^1.0.2",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
+    "moment-timezone": "^0.5.44",
     "mysql": "^2.18.1"
   }
 }
