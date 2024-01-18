@@ -3,7 +3,7 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const port = 3000;
+const port = process.env['APP_PORT']
 const loginRouter = require('./api/login.js');
 const logoutRouter = require('./api/logout.js');
 const getAccountRouter = require('./api/az_account.js').use(auth);

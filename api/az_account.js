@@ -145,11 +145,21 @@ router.post('/preview', async(req, res) => {
                     if (result.status == 'success') {
                         res.status(200).json({msg: `检查成功，Azure OpenAI 可用数量：${result.num}/${result.total} (可用/总数)`, code: 1});
                         // 更新数据库
-                        let sql = `
+
+                        let sql;
+                        if (result.num === result.total){
+                            sql = `
+                                UPDATE rbac
+                                SET preview_available = 1
+                                WHERE tag = '${preview_tag}';
+                            `;
+                        }else{
+                            sql = `
                             UPDATE rbac
-                            SET preview_available = 1, is_alive = 1
+                            SET preview_available = 0
                             WHERE tag = '${preview_tag}';
                         `;
+                        }
                         connection.query(sql, (err, result) => {
                             if (err) {
                                 console.log(err);
