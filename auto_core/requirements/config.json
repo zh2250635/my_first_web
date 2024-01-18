@@ -407,16 +407,6 @@
                 "onePaiGroup": "$group40"
             },
             {
-                "name": "gpt-4",
-                "version": "1106-Preview",
-                "deployName": "gpt-4-32k-1106-preview",
-                "capacity": 150,
-                "oneApiTag": "128k",
-                "oneApiModels": "gpt-4-32k-1106-preview,gpt-4-1106-preview",
-                "oneApiMap": "",
-                "onePaiGroup": "$group40"
-            },
-            {
                 "name": "gpt-4-32k",
                 "version": "0613",
                 "deployName": "gpt-4-32k",
