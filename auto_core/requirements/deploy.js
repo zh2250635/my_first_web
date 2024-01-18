@@ -219,8 +219,8 @@ async function push_to_oneapi(region,keys,name,models,group,capacity,logger){
         model_mapping: model_mapping,
         excluded_fields: "",
         models: models,
-        groups: `["${group}"]`,
-        group: group
+        groups: group === '$group35' ? '[A3.5,A4.0]' : '[A4.0]',
+        group: group === '$group35' ? 'A3.5,A4.0' : 'A4.0',
     }
 
     let config = {
