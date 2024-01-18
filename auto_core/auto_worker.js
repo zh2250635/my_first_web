@@ -43,12 +43,12 @@ parentPort.postMessage({msg: 'AutoWorker started', code: 0});
 
 main(info, tag).then((result) => {
     // 删除锁文件
-    fs.unlinkSync(lock_path)
+    // fs.unlinkSync(lock_path)
     log.info('AutoWorker finished')
     set_used(tag)
 }).catch((err) => {
     // 删除锁文件
-    fs.unlinkSync(lock_path)
+    // fs.unlinkSync(lock_path)
     log.error(err)
     log.info('AutoWorker finished')
     set_used(tag)

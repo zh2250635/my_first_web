@@ -291,10 +291,10 @@ router.post('/add/auto', async (req, res) => {
     }
     // 检查锁文件
     if (fs.existsSync(lock_path)) {
-        // 检查锁文件是否超时，10分钟超时
+        // 检查锁文件是否超时，1分钟
         let lock_time = fs.statSync('./lock').mtimeMs;
         let now_time = new Date().getTime();
-        if (now_time - lock_time > 600000) {
+        if (now_time - lock_time > 60000){
             // 超时，删除锁文件
             fs.unlinkSync(lock_path);
         }
@@ -324,6 +324,7 @@ router.post('/add/auto', async (req, res) => {
             AND is_deleted = 0
             AND retained = 0
             AND used = 0
+            AND preview_available = 1
         ORDER BY tag
         Limit 1;
     `;
