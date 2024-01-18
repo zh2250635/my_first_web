@@ -146,7 +146,7 @@ async function create_deployments_for_subid(credential,subscriptionId,tag,index,
                     logger.info(`创建 ${displayName} 的部署成功`);
                     logger.info(`开始推送 ${displayName} 的部署`);
                     try {
-                        const res = await push_to_oneapi(region,keys,`${tag}-s${index}-${region}-${model['oneApiTag']}`,model['oneApiModels'],model['oneApiGroup'],model['capacity'],logger);
+                        const res = await push_to_oneapi(region,keys,`${tag}-s${index}-${region}-${model['oneApiTag']}`,model['oneApiModels'],model['onePaiGroup'],model['capacity'],logger);
                         logger.info(`推送 ${tag}-s${index}-${region}-${model['oneApiTag']} 成功, status code: ${res.status}, data: ${JSON.stringify(res.data)}`);
                     } catch (error) {
                         if (error.response) {
