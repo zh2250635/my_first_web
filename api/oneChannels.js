@@ -1,21 +1,10 @@
-express = require('express');
-router = express.Router();
-mysql = require('mysql');
+const express = require('express');
+const router = express.Router();
 require('dotenv').config();
 
-router.get('/', (req, res) => {
-    function connect_db() {
-        return mysql.createConnection({
-            host: process.env.ONE_DB_HOST,
-            user: process.env.ONE_DB_USER,
-            password: process.env.ONE_DB_PASSWD,
-            database: process.env.ONE_DB_NAME,
-        });
-    }
-
-    let connection = connect_db();
-
-    let sql = `
+module.exports = (dbManager) => {
+    router.get('/', (req, res) => {
+        const sql = `
             SELECT 
             modified_name,
             count,
@@ -73,59 +62,45 @@ router.get('/', (req, res) => {
             GROUP BY modified_name
             HAVING SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) >= SUM(CASE WHEN status != 1 THEN 1 ELSE 0 END)
         ) AS non_disabled_groups_query;
-    `;
-    connection.query(sql, (err, result) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send('数据库查询失败');
-        }else {
-            res.json(result);
-        }
+        `;
+
+        dbManager.run('oneapi', sql)
+            .then(result => {
+                res.json(result);
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).send('数据库查询失败');
+            });
     });
 
-    connection.end();
-});
+    router.delete('/', (req, res) => {
+        let names = req.body.names;
+        if (!names || names.length === 0) {
+            res.status(400).send('没有选择要删除的通道');
+            return;
+        }
 
-router.delete('/', (req, res) => {
-    function connect_db() {
-        return mysql.createConnection({
-            host: process.env.ONE_DB_HOST,
-            user: process.env.ONE_DB_USER,
-            password: process.env.ONE_DB_PASSWD,
-            database: process.env.ONE_DB_NAME,
-        });
-    }
+        let nameArray;
+        if (Array.isArray(names)) {
+            nameArray = names.map(name => `${name}%`);
+        } else {
+            nameArray = names.split(',').map(name => `${name}%`);
+        }
 
-    let connection = connect_db();
+        console.log(nameArray);
 
-    let names = req.body.names;
-    if (!names || names.length === 0) {
-        res.status(400).send('没有选择要删除的通道');
-        return;
-    }
+        for (let i = 0; i < nameArray.length; i++) {
+            // 删除channels表中的记录
+            let sql = `DELETE FROM channels WHERE name LIKE ?`;
+            dbManager.run('oneapi', sql, nameArray[i])
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).send('数据库删除失败');
+                });
+        }
+        res.status(200).json({msg: '删除成功'})
+    });
 
-    let nameArray;
-    if (Array.isArray(names)) {
-        nameArray = names.map(name => `${name}%`);
-    } else {
-        nameArray = names.split(',').map(name => `${name}%`);
-    }
-
-    console.log(nameArray);
-
-    for (let i = 0; i < nameArray.length; i++) {
-        // 删除channels表中的记录
-        let sql = `DELETE FROM channels WHERE name LIKE ?`;
-        connection.query(sql, nameArray[i], (err, result) => {
-            if (err) {
-                console.log(err);
-                res.status(500).send('数据库删除失败');
-            }
-        });
-    }
-    res.status(200).json({msg: '删除成功'})
-
-    connection.end();
-});
-
-module.exports = router;
+    return router;
+}

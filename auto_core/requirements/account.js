@@ -93,6 +93,25 @@ async function check_preview(credential, subscriptionIds = []) {
     return result;
 }
 
+async function check_CognitiveServices(credential, subscriptionIds = []) {
+    const client = new SubscriptionClient(credential);
+    if (subscriptionIds.length === 0) {
+        subscriptionIds = await list_sub_ids(credential);
+    }
+    const provider = await client.providers.get('Microsoft.CognitiveServices');
+
+    // 检查provider的状态是否为未注册
+    if (provider.registrationState !== 'NotRegistered') {
+        return false;
+    }else{
+        // 返回一个注册的promise
+        return new Promise((resolve, reject) => {
+            client.providers.register('Microsoft.CognitiveServices')
+                .then(result => resolve(result))
+                .catch(err => reject(err));
+        });
+    }
+}
 async function get_credential(appId = '01438b42-7198-4043-a663-cd305abfbc24', password = 'wZ_8Q~XPJhw5pWrh5dojfVhNOkTgWESjyrSU7ceb', tenantId = 'dc5fceee-1ddb-40db-a438-f01e5748ba2a') {
     const credential = new ClientSecretCredential(tenantId, appId, password);
     // console.log(appId, password, tenantId, credential);
@@ -120,6 +139,11 @@ if (require.main === module) {
 
     // 在这里，你可以调用 check_preview 函数，并打印返回的结果
     check_preview(credential)
+        .then(result => console.log(result))
+        .catch(err => console.error(err));
+
+    // 在这里，你可以调用 check_CognitiveServices 函数，并打印返回的结果
+    check_CognitiveServices(credential)
         .then(result => console.log(result))
         .catch(err => console.error(err));
 }

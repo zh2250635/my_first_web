@@ -1,6 +1,9 @@
 async function get_token(credential) {
-    const token = await credential.getToken("https://cognitiveservices.azure.com/.default");
-    return token.token;
+    return new Promise((resolve, reject) => {
+        credential.getToken("https://cognitiveservices.azure.com/.default")
+            .then(token => resolve(token.token))
+            .catch(err => reject(err));
+    });
 }
 
 if (require.main === module) {

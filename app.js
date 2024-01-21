@@ -4,11 +4,14 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const port = process.env['APP_PORT']
+
+const dbManager = require('./api/db_manager.js');
+
 const loginRouter = require('./api/login.js');
 const logoutRouter = require('./api/logout.js');
-const getAccountRouter = require('./api/az_account.js').use(auth);
-const oneapiRouter = require('./api/oneapi.js').use(auth);
-const oneapiRouter2 = require('./api/oneChannels.js').use(auth);
+const getAccountRouter = require('./api/az_account.js')(dbManager);
+const oneapiRouter = require('./api/oneapi.js')(dbManager);
+const oneapiRouter2 = require('./api/oneChannels.js')(dbManager);
 
 function auth(req, res, next) {
     const token = req.cookies.jwt;
@@ -21,6 +24,7 @@ function auth(req, res, next) {
     try {
         // 验证 token
         jwt.verify(token, process.env.JWT_KEY);
+        console.log('验证通过');
         // 如果验证通过，调用 next() 函数，将控制权传递给下一个中间件或路由处理器
         next();
     } catch (err) {
@@ -30,7 +34,9 @@ function auth(req, res, next) {
 }
 
 // 使用中间件
-// app.use(auth);
+getAccountRouter.use(auth);
+oneapiRouter.use(auth);
+oneapiRouter2.use(auth);
 
 app.use(cookieParser());
 app.use(express.json()); // 用于解析JSON请求体
@@ -56,4 +62,12 @@ app.get('/login', (req, res) => {
 // 监听指定端口，启动服务器
 app.listen(port, () => {
   console.log(`服务器运行在 http://localhost:${port}`);
+});
+
+
+// 程序退出时关闭数据库连接
+process.on('SIGINT', () => {
+    dbManager.close();
+    console.log('数据库连接已关闭');
+    process.exit();
 });
