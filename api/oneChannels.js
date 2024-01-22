@@ -92,8 +92,8 @@ module.exports = (dbManager) => {
 
         for (let i = 0; i < nameArray.length; i++) {
             // 删除channels表中的记录
-            let sql = `DELETE FROM channels WHERE name LIKE ?`;
-            dbManager.run('oneapi', sql, nameArray[i])
+            let sql = `DELETE FROM channels WHERE name LIKE '${nameArray[i]}'`
+            dbManager.run('oneapi', sql)
                 .catch(err => {
                     console.log(err);
                     res.status(500).send('数据库删除失败');
