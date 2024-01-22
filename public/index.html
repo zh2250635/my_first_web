@@ -34,7 +34,7 @@
                 <button onclick="checkPreview(this)">检查权限</button>
                 <button onclick="checkAlive(this)">检查存活</button>
                 <button onclick="apply(this)">申请</button>
-                <button onclick="deploy(this)">部署</button>
+                <!-- <button onclick="deploy(this)">部署</button> -->
             </div>
         </div>
 
@@ -45,6 +45,7 @@
                     <label for="oneapi" style="width: 100px;">模型:</label>
                     <select id="oneapi" name="oneapi" required>
                         <option value="gpt-4-32k-1106-preview" selected>gpt-4-32k-1106-preview</option>
+                        <option value="gpt-4-32k">gpt-4</option>
                         <option value="gpt-4-32k">gpt-4-32k</option>
                         <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
                     </select>
@@ -74,8 +75,8 @@
             </table>
             <div class="buttons">
                 <button onclick="refresh(this)">刷新</button>
-                <button onclick="lower(this)">降低优先级</button>
-                <button onclick="raise(this)">提高优先级</button>
+                <button onclick="deleteUseless(this)">删除禁用</button>
+                <!-- <button onclick="raise(this)">提高优先级</button> -->
                 <button onclick="deleteChannels(this)">删除</button>
             </div>
         </div>

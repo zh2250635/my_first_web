@@ -113,4 +113,10 @@ window.addEventListener('load', () => {
             dragContainer(this);
         }
     }
+    // 移动端阻止container的拖动
+    for (var i = 0; i < h1s.length; i++) {
+        h1s[i].addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        });
+    }
 });

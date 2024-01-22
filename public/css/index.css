@@ -139,13 +139,17 @@ div[name='container'] > .buttons > button:hover {
 @media screen and (max-width: 600px) {
     /* 让container自动对齐 */
     div[name='container'] {
-        max-width: 100% !important;
+        max-width: 90% !important;
         max-height: 100% !important;
-        width: 100% !important;
-        height: 100% !important;
+        width: 90% !important;
+        height: auto !important;
         position: relative !important;
         padding: 0;
-        margin: 0;
-        border-radius: 0;
+        margin-left: 5%;
+        margin-top: 20px;
+        border-radius: 10px;
+    }
+    .buttons {
+        flex-direction: column;
     }
 }

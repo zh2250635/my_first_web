@@ -102,5 +102,25 @@ module.exports = (dbManager) => {
         res.status(200).json({msg: '删除成功'})
     });
 
+    router.delete('/useless', (req, res) => {
+        let sql = `
+            DELETE FROM channels
+            WHERE (name LIKE '${process.env.SOURCE}%' OR name LIKE 'az-%')
+                AND status <> 1
+        `;
+
+        dbManager.run('oneapi', sql)
+        .then(result => {
+            // 读取删除的记录数
+            let affectedRows = result.affectedRows;
+            // 返回删除的记录数
+            res.status(200).json({msg: `成功删除${affectedRows}条记录`, code: 1});
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send('数据库删除失败');
+        });
+    });
+
     return router;
 }

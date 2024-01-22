@@ -155,6 +155,36 @@ function deleteChannels(){
     });
 }
 
+function deleteUseless(){
+    // 发送删除请求
+    fetch('/api/oneChannels/useless', {
+        method: 'DELETE',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then((response) => {
+        // 如果返回状态码为200，表示请求成功
+        if (response.status === 200) {
+            var json = response.json();
+            return json;
+        }else {
+            // 否则，返回错误信息
+            return response.text();
+        }
+    }).then((data) => {
+        // 如果返回的是JSON数据，表示请求成功
+        if (typeof(data) === 'object') {
+            alert(data.msg);
+            refresh();
+        }else{
+            alert(data);
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
 window.addEventListener('load', () => {
     add_listener_to_oneapi_form();
 });
