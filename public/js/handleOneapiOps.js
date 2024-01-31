@@ -57,6 +57,11 @@ function get_select_names() {
 }
 
 function refresh(){
+    // 清除表格中的数据(除了表头和第一行)
+    table = document.getElementById('oneapi_channels_info');
+    while (table.rows.length > 3) {
+        table.deleteRow(1);
+    }
     fetch('/api/oneChannels', {
         method: 'GET',
         credentials: 'same-origin',
@@ -75,7 +80,7 @@ function refresh(){
     }).then((data) => {
         // 如果返回的是JSON数据，表示请求成功
         if (typeof(data) === 'object') {
-            // 清除表格中的数据(除了表头)
+            // 清除表格中的数据(除了表头和第一行)
             table = document.getElementById('oneapi_channels_info');
             while (table.rows.length > 1) {
                 table.deleteRow(1);
@@ -84,7 +89,8 @@ function refresh(){
             localStorage.setItem('oneapi_channels_imformation_cache', JSON.stringify(data));
             // 重新加载数据
             for (let i = 0; i < data.length; i++) {
-                if (data[i].modified_name.startsWith('az-')) {
+                // 判断是否为本地运行
+                if (window.location.hostname != 'localhost' && data[i].modified_name.startsWith('az-')) {
                     continue;
                 }
                 let row = table.insertRow();

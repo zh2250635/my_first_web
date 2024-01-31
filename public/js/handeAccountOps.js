@@ -157,6 +157,9 @@ function checkPreview(){
             }
         }else{
             alert(data);
+            // 刷新数据
+            refreshAccount();
+
         }
     }).catch((err) => {
         console.log(err);
@@ -207,6 +210,8 @@ function checkAlive(){
             }
         }else{
             alert(data);
+            // 刷新数据
+            refreshAccount();
         }
     }).catch((err) => {
         console.log(err);
@@ -284,5 +289,7 @@ async function show_message(content) {
     message.style.top = (height - message_height) / 10 + 'px';
     // 显示message
     message.classList.add('show');
+    // 让message处于最上层
+    message.zIndex = 2000
     setTimeout(() => message.classList.remove('show'), 2000);
 }
