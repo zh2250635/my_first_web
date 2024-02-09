@@ -43,7 +43,7 @@ function get_account_info() {
                 let cell7 = newRow.insertCell(6);
                 cell7.innerHTML = '<input type="checkbox" value="' + item.tag + '">';
 
-                if (item.used == '0' && item.is_alive == '1') {
+                if (item.used == '0' && item.is_alive == '1' && item.preview_available == '1') {
                     // 将背景设置为绿色
                     newRow.style.backgroundColor = '#ccffcc';
                 }else{
@@ -54,6 +54,11 @@ function get_account_info() {
                 if (item.used == '1' || item.is_alive == '0') {
                     // 将背景设置为红色
                     newRow.style.backgroundColor = '#ffcccc';
+                }
+
+                if (item.is_alive == '0') {
+                    // 将背景设置为深红色
+                    newRow.style.backgroundColor = '#ff6666';
                 }
             }
         }
