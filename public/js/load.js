@@ -43,10 +43,17 @@ function get_account_info() {
                 let cell7 = newRow.insertCell(6);
                 cell7.innerHTML = '<input type="checkbox" value="' + item.tag + '">';
 
-                if (item.used == '1') {
-                    newRow.style.backgroundColor = '#ffcccc';
+                if (item.used == '0' && item.is_alive == '1') {
+                    // 将背景设置为绿色
+                    newRow.style.backgroundColor = '#ccffcc';
                 }else{
-                    newRow.style.backgroundColor = '#e4f6d4';
+                    // 将背景设置为蓝色
+                    newRow.style.backgroundColor = '#cce5ff';
+                }
+
+                if (item.used == '1' || item.is_alive == '0') {
+                    // 将背景设置为红色
+                    newRow.style.backgroundColor = '#ffcccc';
                 }
             }
         }
