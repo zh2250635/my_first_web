@@ -12,7 +12,7 @@ module.exports = (dbManager) => {
         const sql = `
             SELECT tag,used,
                 LENGTH(sub_ids) - LENGTH(REPLACE(sub_ids, ' ', '')) AS sub_id_count,
-                preview_available,is_alive,retained
+                preview_available,is_alive,retained,mail
             FROM rbac
             WHERE tag LIKE '${process.env.SOURCE}-%' AND is_deleted = 0
             ORDER BY tag;

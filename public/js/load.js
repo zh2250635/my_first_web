@@ -41,7 +41,14 @@ function get_account_info() {
                 cell6.innerHTML = item.is_alive == '1' ? "存活" : "挂了";
 
                 let cell7 = newRow.insertCell(6);
-                cell7.innerHTML = '<input type="checkbox" value="' + item.tag + '">';
+                if(item.mail){
+                    cell7.innerHTML = item.mail.replace(/"/g, '');
+                }else{
+                    cell7.innerHTML = '未知'
+                }
+
+                let cell8 = newRow.insertCell(7);
+                cell8.innerHTML = '<input type="checkbox" value="' + item.tag + '">';
 
                 if (item.used == '0' && item.is_alive == '1' && item.preview_available == '1') {
                     // 将背景设置为绿色
