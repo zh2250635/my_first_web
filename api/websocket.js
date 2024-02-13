@@ -143,6 +143,7 @@ if (!host || !username || !password || !image) {
                                     // 如果找到了对应的日志信息，则打印出来
                                     if (row) {
                                         socket.emit('error',`${row.time} ${row.msg}`);
+                                        console.log(`${row.time} ${row.msg}`);
                                     }
                                 }
                             });
@@ -155,14 +156,17 @@ if (!host || !username || !password || !image) {
                                     // 如果找到了对应的日志信息，则打印出来
                                     if (row) {
                                         socket.emit('error',(`${row.time} ${row.msg}`));
+                                        console.log(`${row.time} ${row.msg}`);
                                     }
                                 }
                             });
                             // 打印美化后的日志，不打印id和ip，耗时放到最后，方便查看, 并且将状态码标红
                             socket.emit('error',(`${time} ${statusCode} ${methodAndPath} ${timeCost}`));
+                            console.log(`${time} ${statusCode} ${methodAndPath} ${timeCost}`);
                         }else {
                             // 打印美化后的日志，不打印id和ip，耗时放到最后，方便查看
                             socket.emit('info',(`${time} ${statusCode} ${methodAndPath} ${timeCost}`));
+                            console.log(`${time} ${statusCode} ${methodAndPath} ${timeCost}`);
                         }
                     }
 
