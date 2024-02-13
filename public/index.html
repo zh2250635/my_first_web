@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/logs.css">
+    <script src="/js/sql-wasm.js"></script>
     <script src="/js/index.js"></script>
     <script src="/js/load.js"></script>
     <script src="js/handeAccountOps.js"></script>
     <script src="js/handleOneapiOps.js"></script>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script src="js/socket.js"></script>
     <title>控制面板</title>
 </head>
 <body>
@@ -80,6 +84,16 @@
                 <!-- <button onclick="raise(this)">提高优先级</button> -->
                 <button onclick="deleteChannels(this)">删除</button>
             </div>
+        </div>
+
+        <div name="container" id="one-logs">
+            <h1 id="one-logs">oneapi日志</h1>
+            <div id="logs">
+                <span data-type="error"> error! </span>
+                <span data-type="info"> info </span>
+                <span data-type="warning"> haha </span>
+            </div>
+            <button onclick="getlogs(this)">获取日志</button>
         </div>
     </div>
     <div id="message">

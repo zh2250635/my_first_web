@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+const { Server } = require('socket.io');
+const server = require('http').createServer(app);
+const io = new Server(server);
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -59,15 +62,32 @@ app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
 });
 
-// 监听指定端口，启动服务器
-app.listen(port, () => {
-  console.log(`服务器运行在 http://localhost:${port}`);
+// 导入 WebSocket 模块并传递 io 实例
+require('./api/websocket')(io);
+
+// 启动服务器
+server.listen(port, () => {
+  console.log(`服务器已启动，正在监听端口 ${port}`);
 });
 
-
-// 程序退出时关闭数据库连接
+// 程序退出时关闭数据库连接和服务器
 process.on('SIGINT', () => {
     dbManager.close();
     console.log('数据库连接已关闭');
+    server.close();
+    console.log('服务器已关闭');
     process.exit();
+});
+
+// 程序遇到未捕获的异常时关闭数据库连接和服务器
+process.on('uncaughtException', (err) => {
+    console.error(err);
+    dbManager.close();
+    console.log('数据库连接已关闭');
+    server.close();
+    // 检查server是否已经关闭
+    server.on('close', () => {
+        console.log('服务器已关闭');
+        process.exit();
+    });
 });

@@ -39,11 +39,11 @@ class DatabaseConnectionManager {
 
       db.queue.push({ sql, resolve, reject });
 
-      this.processQueue(db);
+      this.processQueue(db, dbName);
     });
   }
 
-  processQueue(db) {
+  processQueue(db, dbName) {
     if (db.processing || db.queue.length === 0) {
       return;
     }
@@ -51,15 +51,30 @@ class DatabaseConnectionManager {
     db.processing = true;
 
     const task = db.queue.shift();
-    db.connection.query(task.sql, (error, results) => {
-      db.processing = false;
+    
+    // 尝试select 1，以确保连接可用
+    db.connection.query('SELECT 1', (error, results, fields) => {
+      if (error) {
+        // 如果发生错误，重新连接
+        db.connection.end();
+        db.connection = this.createConnection(dbName);
+        this.connections[dbName] = db;
+        task.reject(error);
+      } else {
+        this.executeTask(db, task);
+      }
+    });
+  }
 
+  executeTask(db, task) {
+    db.connection.query(task.sql, (error, results, fields) => {
       if (error) {
         task.reject(error);
       } else {
         task.resolve(results);
       }
 
+      db.processing = false;
       this.processQueue(db);
     });
   }
