@@ -140,6 +140,16 @@ function count_color(table){
     cell4.innerHTML = blue_count;
     let cell5 = newRow.insertCell(4);
     cell5.innerHTML = green_count;
+
+    // 修改对应列的背景颜色
+
+    // 总数灰色
+    cell1.style.backgroundColor = '#f2f2f2';
+
+    cell2.style.backgroundColor = '#ff6666';
+    cell3.style.backgroundColor = '#ffcccc';
+    cell4.style.backgroundColor = '#cce5ff';
+    cell5.style.backgroundColor = '#ccffcc';
 }
 
 function load_oneapi_channels() {
