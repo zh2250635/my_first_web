@@ -252,5 +252,31 @@ module.exports = (dbManager) => {
         });
     });
 
+    router.post('/deploy', async (req, res) => {
+        let tag = req.body?.tag || null
+        if (!tag){
+            res.status(200).json({msg: '缺少tag', code: 0});
+            return
+        }
+
+        let fetchUrl = 'http://167.172.5.62:5000/add'
+
+        let data = {
+            'source': process.env.SOURCE,
+            tag
+        }
+
+        let response = await fetch(fetchUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+
+        let result = await response.json()
+        res.status(200).json(result)
+    });
+
     return router;
 };

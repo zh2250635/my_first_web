@@ -273,6 +273,57 @@ function apply(){
     });
 }
 
+function deploy(){
+    let tags = get_select_tags();
+    // 如果tags为空, 则发出提示
+    if (tags == '') {
+        alert('请选择要部署的账号');
+        return;
+    }
+
+    // 如果大于1个账号，则发出提示
+    if (tags.split(',').length > 1) {
+        alert('放过我吧，一次只能部署一个账号');
+        return;
+    }
+
+    show_message('部署中，不要刷新。。。')
+    // 发送请求
+    fetch('/api/az_account/deploy', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({tag: tags}),
+    }).then((response) => {
+        // 如果返回状态码为200，表示请求成功
+        if (response.status === 200) {
+            var json = response.json();
+            return json;
+        }else {
+            // 否则，返回错误信息
+            return response.text();
+        }
+    }).then((data) => {
+        // 如果返回的是JSON数据，表示请求成功
+        if (typeof(data) === 'object') {
+            // 如果检查成功
+            if (data.code == 1) {
+                // 显示检查结果
+                alert(data.msg);
+            }else{
+                // 显示检查结果
+                alert(data.msg);
+            }
+        }else{
+            alert(data);
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
 async function show_message(content) {
     var message = document.getElementById('message');
     message.textContent = content;
