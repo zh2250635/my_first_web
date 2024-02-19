@@ -102,20 +102,33 @@ if (!host || !username || !password || !image) {
                         return;
                     }
                     stream.on('data', (data) => {
-                        let log = data.toString();
-                        // 如果日志不为空且以[GIN]开头，则为我们需要的日志
-                        if (log && log.startsWith('[GIN]')) {
-                            handelGin(log);
-                        }else if (log && log.startsWith('[INFO]')) {
-                            handelInfo(log);
-                        }else if (log && log.startsWith('[ERR]')) {
-                            handelErr(log);
-                        }
+                        let logs = removeAnsiColorCodes(data.toString());
+                        // 划分单行日志
+                        let logArr = logs.split('\n');
+                        // 处理每一行日志
+                        logArr.forEach((log) => {
+                            if (log === '' || log === '\n' || log === '\r\n' || log === '\r') {
+                                return;
+                            }
+                            if (log.startsWith('[GIN]')) {
+                                handelGin(log);
+                            }else if (log.startsWith('[ERR]')) {
+                                handelErr(log);
+                            }else if (log.startsWith('[INFO]')) {
+                                handelInfo(log);
+                            }
+                        });
                     });
                     stream.on('close', () => {
                         console.log('stream close');
                         runCommand(conn, command, socket, ready);
                     });
+
+                    function removeAnsiColorCodes(str) {
+                        // ANSI颜色代码的正则表达式
+                        const ansiRegex = /\x1b\[[0-9;]*m/g;
+                        return str.replace(ansiRegex, '');
+                    }
 
                     function handelGin(log) {
                         // 去除日志前缀
@@ -136,12 +149,13 @@ if (!host || !username || !password || !image) {
                         // 如果状态码不为200，则根据id在info和err表中查找对应的日志信息
                         if (statusCode !== '200') {
                             // 根据id在info表中查找对应的日志信息
-                            db.get(`SELECT * FROM info WHERE id = ?`, [id], (err, row) => {
+                            db.get(`SELECT * FROM info where id = ?`, [id], (err, row) => {
                                 if (err) {
                                     console.error(err);
                                 }else {
                                     // 如果找到了对应的日志信息，则打印出来
                                     if (row) {
+                                        console.log(JSON.stringify(row));
                                         socket.emit('error',`${row.time} ${row.msg}`);
                                         console.log(`${row.time} ${row.msg}`);
                                     }
@@ -156,22 +170,21 @@ if (!host || !username || !password || !image) {
                                     // 如果找到了对应的日志信息，则打印出来
                                     if (row) {
                                         socket.emit('error',(`${row.time} ${row.msg}`));
-                                        console.log(`${row.time} ${row.msg}`);
+                                        // console.log(`${row.time} ${row.msg}`);
                                     }
                                 }
                             });
-                            // 打印美化后的日志，不打印id和ip，耗时放到最后，方便查看, 并且将状态码标红
+                            // 打印美化后的日志，不打印id和ip，耗时放到最后，方便查看
                             socket.emit('error',(`${time} ${statusCode} ${methodAndPath} ${timeCost}`));
-                            console.log(`${time} ${statusCode} ${methodAndPath} ${timeCost}`);
+                            // console.log(`${time} ${statusCode} ${methodAndPath} ${timeCost}`);
                         }else {
                             // 打印美化后的日志，不打印id和ip，耗时放到最后，方便查看
                             socket.emit('info',(`${time} ${statusCode} ${methodAndPath} ${timeCost}`));
-                            console.log(`${time} ${statusCode} ${methodAndPath} ${timeCost}`);
                         }
                     }
 
                     function handelErr(log) {
-                        log = log.replace('[ERR] ', '');
+                        log = log.replace('[ERR]', '');
                         let logArr = log.split('|');
                         let time = logArr.length > 0 ? logArr[0].trim() : '未知时间';
                         let id = logArr.length > 1 ? logArr[1].trim() : '未知ID';
@@ -182,7 +195,7 @@ if (!host || !username || !password || !image) {
                     }
 
                     function handelInfo(log) {
-                        log = log.replace('[INFO] ', '');
+                        log = log.replace('[INFO]', '');
                         let logArr = log.split('|');
                         let time = logArr.length > 0 ? logArr[0].trim() : '未知时间';
                         let id = logArr.length > 1 ? logArr[1].trim() : '未知ID';

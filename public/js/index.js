@@ -84,13 +84,13 @@ window.addEventListener('load', () => {
     var keys = Object.keys(localStorage);
     for (var i = 0; i < keys.length; i++) {
         try {
-            if (keys[i] == 'settings') {
-                continue;
-            }
             var id = keys[i];
             var left = localStorage.getItem(id).split(',')[0];
             var top = localStorage.getItem(id).split(',')[1];
             var container = document.getElementById(id);
+            if (container == null) {
+                continue;
+            }
             container.style.left = left;
             container.style.top = top;
         }catch(err) {
