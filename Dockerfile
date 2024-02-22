@@ -1,6 +1,6 @@
-# 使用node14
+# 使用node20.8.1-alpine作为基础镜像
 # 第一阶段：基于Node.js的Alpine版本构建依赖
-FROM node:14-alpine as builder
+FROM node:20.8.1-alpine as builder
 
 # 设置工作目录
 WORKDIR /usr/src/app
@@ -15,7 +15,7 @@ RUN npm install && npm cache clean --force
 COPY . .
 
 # 第二阶段：从builder阶段复制必要的文件
-FROM node:14-alpine
+FROM node:20.8.1-alpine
 
 # 设置工作目录
 WORKDIR /usr/src/app
