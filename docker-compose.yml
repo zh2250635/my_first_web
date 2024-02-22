@@ -1,0 +1,26 @@
+version: '3'
+services:
+  web:
+    image: xhtnext/myweb:0.0.1
+    ports:
+      - "3000:3000"
+    environment:
+      - JWT_KEY=jwt
+      - DB_HOST=host
+      - DB_PORT=3306
+      - DB_USER=user
+      - DB_PASSWD=passwd
+      - DB_NAME=name
+      - ONE_DB_HOST=host
+      - ONE_DB_PORT=port
+      - ONE_DB_USER=user
+      - ONE_DB_PASSWD=passwd
+      - ONE_DB_NAME=name
+      - SOURCE=bq
+      - ONEAPI_BASE=one_url
+      - ONEAPI_TOKEN=one_token
+      - APP_PORT=4090
+      - DOCKER_HOST=1.1.1.1
+      - DOCKER_USER=root
+      - DOCKER_PASSWD=passwd
+      - DOCKER_IMAGE_NAME=calciumion/new-api:0.1.3-alpha.2
