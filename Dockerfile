@@ -10,7 +10,7 @@ COPY package*.json ./
 # 安装依赖
 RUN npm install && npm cache clean --force
 
-# 复制所有文件到工作目录
+# 复制所有文件到工作目录，除了.dockerignore中指定的文件
 COPY . .
 
 # 第二阶段：从builder阶段复制必要的文件
@@ -21,6 +21,9 @@ WORKDIR /usr/src/app
 
 # 从builder阶段复制构建的结果
 COPY --from=builder /usr/src/app .
+
+#环境变量
+ENV PORT=3000
 
 # 暴露端口
 EXPOSE 3000
