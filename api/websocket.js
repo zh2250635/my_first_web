@@ -102,11 +102,18 @@ if (!host || !username || !password || !image) {
                         return;
                     }
                     stream.on('data', (data) => {
+                        let lastLine = '';
                         let logs = removeAnsiColorCodes(data.toString());
                         // 划分单行日志
                         let logArr = logs.split('\n');
-                        // 处理每一行日志
-                        logArr.forEach((log) => {
+                        // 处理每一行日志, 由于日志可能会被分割，所以需要处理上一行和下一行的日志
+                        logArr.forEach((log, index) => {
+                            if (index === 0) {
+                                log = lastLine + log;
+                            }else if (index === logArr.length - 1) {
+                                lastLine = log;
+                                return;
+                            }
                             if (log === '' || log === '\n' || log === '\r\n' || log === '\r') {
                                 return;
                             }
