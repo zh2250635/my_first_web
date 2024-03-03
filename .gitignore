@@ -1,3 +1,4 @@
 node_modules/
 .env
 auto_core/logs/
+sshkey

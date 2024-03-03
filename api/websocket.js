@@ -1,6 +1,8 @@
 require('dotenv').config();
 const { Client } = require('ssh2');
 const sqlite3 = require('sqlite3').verbose();
+const Docker = require('dockerode');
+const { PassThrough } = require('stream');
 
 // 初始化一个内存数据库 
 /**
@@ -77,157 +79,180 @@ if (!host || !username || !password || !image) {
     module.exports = (io) => {
         let ready = false;
         io.on('connection', (socket) => {
+            let docker = '';
             console.log('a user connected');
-            const conn = new Client();
             socket.emit('info', '欢迎使用日志服务，正在连接到服务器...');
             socket.on('disconnect', () => {
+                // 回收资源
+                docker = '';
                 console.log('user disconnected');
-                // 断开连接
-                conn.end();
-                console.log('ssh end');
                 ready = false;
             });
-
-            // 运行命令
-            function runCommand(conn, command, socket, readys = true) {
-                if (!readys) {
-                    console.log('ssh not ready');
-                    return;
-                }
-                socket.emit('info', '已连接到服务器，正在获取日志...');
-                // 如果已经连接到服务器，运行命令
-                conn.exec(command, (err, stream) => {
-                    if (err) {
-                        console.log(err);
-                        return;
-                    }
-                    stream.on('data', (data) => {
-                        let lastLine = '';
-                        let logs = removeAnsiColorCodes(data.toString());
-                        // 划分单行日志
-                        let logArr = logs.split('\n');
-                        // 处理每一行日志, 由于日志可能会被分割，所以需要处理上一行和下一行的日志
-                        logArr.forEach((log, index) => {
-                            if (index === 0) {
-                                log = lastLine + log;
-                            }else if (index === logArr.length - 1) {
-                                lastLine = log;
-                                return;
-                            }
-                            if (log === '' || log === '\n' || log === '\r\n' || log === '\r') {
-                                return;
-                            }
-                            if (log.startsWith('[GIN]')) {
-                                handelGin(log);
-                            }else if (log.startsWith('[ERR]')) {
-                                handelErr(log);
-                            }else if (log.startsWith('[INFO]')) {
-                                handelInfo(log);
-                            }
-                        });
-                    });
-                    stream.on('close', () => {
-                        console.log('stream close');
-                        runCommand(conn, command, socket, ready);
-                    });
-
-                    function removeAnsiColorCodes(str) {
-                        // ANSI颜色代码的正则表达式
-                        const ansiRegex = /\x1b\[[0-9;]*m/g;
-                        return str.replace(ansiRegex, '');
-                    }
-
-                    function handelGin(log) {
-                        // 去除日志前缀
-                        log = log.replace('[GIN] ', '');
-                        // 用|分割日志
-                        const logArr = log.split('|');
-                        // 优雅地提取信息，确保不会因为数组索引不存在而出错
-                        const time = logArr.length > 0 ? logArr[0].trim() : '未知时间';
-                        const id = logArr.length > 1 ? logArr[1].trim() : '未知ID';
-                        const statusCode = logArr.length > 2 ? logArr[2].trim() : '未知状态码';
-                        const timeCost = logArr.length > 3 ? logArr[3].trim() : '未知耗时';
-                        const ip = logArr.length > 4 ? logArr[4].trim() : '未知IP';
-                        const methodAndPath = logArr.length > 5 ? logArr[5].trim() : '未知方法和路径';
-
-                        // 将日志写入数据库的gin表中
-                        db.run(`INSERT INTO gin VALUES (?,?,?,?,?)`, [time, id, statusCode, ip, methodAndPath]);
-
-                        // 如果状态码不为200，则根据id在info和err表中查找对应的日志信息
-                        if (statusCode !== '200') {
-                            // 根据id在info表中查找对应的日志信息
-                            db.get(`SELECT * FROM info where id = ?`, [id], (err, row) => {
-                                if (err) {
-                                    console.error(err);
-                                }else {
-                                    // 如果找到了对应的日志信息，则打印出来
-                                    if (row) {
-                                        console.log(JSON.stringify(row));
-                                        socket.emit('error',`${row.time} ${row.msg}`);
-                                        console.log(`${row.time} ${row.msg}`);
-                                    }
-                                }
-                            });
-
-                            // 根据id在err表中查找对应的日志信息
-                            db.get(`SELECT * FROM err WHERE id = ?`, [id], (err, row) => {
-                                if (err) {
-                                    console.error(err);
-                                }else {
-                                    // 如果找到了对应的日志信息，则打印出来
-                                    if (row) {
-                                        socket.emit('error',(`${row.time} ${row.msg}`));
-                                        // console.log(`${row.time} ${row.msg}`);
-                                    }
-                                }
-                            });
-                            // 打印美化后的日志，不打印id和ip，耗时放到最后，方便查看
-                            socket.emit('error',(`${time} ${statusCode} ${methodAndPath} ${timeCost}`));
-                            // console.log(`${time} ${statusCode} ${methodAndPath} ${timeCost}`);
-                        }else {
-                            // 打印美化后的日志，不打印id和ip，耗时放到最后，方便查看
-                            socket.emit('info',(`${time} ${statusCode} ${methodAndPath} ${timeCost}`));
-                        }
-                    }
-
-                    function handelErr(log) {
-                        log = log.replace('[ERR]', '');
-                        let logArr = log.split('|');
-                        let time = logArr.length > 0 ? logArr[0].trim() : '未知时间';
-                        let id = logArr.length > 1 ? logArr[1].trim() : '未知ID';
-                        let msg = logArr.length > 2 ? logArr[2].trim() : '未知信息';
-                    
-                        // 将日志写入数据库的err表中
-                        db.run(`INSERT INTO err VALUES (?,?,?)`, [time, id, msg]);
-                    }
-
-                    function handelInfo(log) {
-                        log = log.replace('[INFO]', '');
-                        let logArr = log.split('|');
-                        let time = logArr.length > 0 ? logArr[0].trim() : '未知时间';
-                        let id = logArr.length > 1 ? logArr[1].trim() : '未知ID';
-                        let msg = logArr.length > 2 ? logArr[2].trim() : '未知信息';
-                    
-                        // 将日志写入数据库的info表中
-                        db.run(`INSERT INTO info VALUES (?,?,?)`, [time, id, msg]);
-                    }
-                });
-            }
-            
-            // 连接到ssh服务器
-            conn.connect({
+            // 创建一个新的docker连接
+            docker = new Docker({
+                protocol: 'ssh', // 使用ssh协议连接docker服务器
                 host: host,
+                port: 22,
                 username: username,
                 password: password
-            }).on('ready', () => {
-                console.log('ssh ready');
-                ready = true;
-                runCommand(conn, command, socket, ready);
             });
+            try {
+                // 连接到docker服务器
+                docker.ping((err, data) => {
+                    if (err) {
+                        console.error(err);
+                        socket.emit('error', '连接到服务器失败');
+                    }else {
+                        ready = true;
+                        socket.emit('info', '连接到服务器成功');
+                        try {
+                            listenLog();
+                        }catch (error) {
+                            console.error(error);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+                socket.emit('error', `连接到服务器失败，错误信息：${error}`);
+            }
 
-            conn.on('error', (err) => {
-                console.log(err);
-            });
+            function listenLog() {
+                // 监听日志
+                if (ready && docker) {
+                    const logStream = new PassThrough();
+
+                    let container_id = ''
+                    socket.emit('info', '正在查找容器id... ')
+
+                    // 获取所有的容器，根据容器的信息，找到对应的容器获取日志
+                    docker.listContainers((err, containers) => {
+                        if (err) {
+                            console.error(err);
+                        }else {
+                            containers.forEach(containerInfo => {
+                                if (containerInfo.Image.indexOf(image) > -1) {
+                                    container_id = containerInfo.id
+                                    if (!docker){
+                                        console.log('docker is not ready')
+                                        return
+                                    }
+                                    const container = docker.getContainer(containerInfo.Id);
+                                    container.logs({
+                                        follow: true,
+                                        stdout: true,
+                                        stderr: true,
+                                        tail: 0
+                                    }, (err, stream) => {
+                                        if (err) {
+                                            console.error(err);
+                                        }else {
+                                            container.modem.demuxStream(stream, logStream, logStream);
+                                        }
+                                    });
+                                    socket.emit('info','日志流开始传输')
+                                }
+                            });
+                        }
+                    });
+
+                    let lastLog = '';
+
+                    // 监听日志流
+                    logStream.on('data', (chunk) => {
+                        let logstr = lastLog + chunk.toString();
+                        // 将日志划分为一行一行的
+                        const logs = logstr.split('\n');
+                        // 逐行处理日志
+                        for (let i = 0; i < logs.length - 1; i++) {
+                            let log = logs[i];
+                            // 如果是gin日志
+                            if (log.indexOf('[GIN]') > -1) {
+                                handelGin(log);
+                            }else if (log.indexOf('[ERR]') > -1) {
+                                handelErr(log);
+                            }else if (log.indexOf('[INFO]') > -1) {
+                                handelInfo(log);
+                            }
+                        }
+                        // 将最后一行的日志保存下来
+                        lastLog = logs[logs.length - 1];
+                    });
+                }
+            }
+
+            function handelGin(log) {
+                // 去除日志前缀
+                log = log.replace('[GIN] ', '');
+                // 用|分割日志
+                const logArr = log.split('|');
+                // 优雅地提取信息，确保不会因为数组索引不存在而出错
+                const time = logArr.length > 0 ? logArr[0].trim() : '未知时间';
+                const id = logArr.length > 1 ? logArr[1].trim() : '未知ID';
+                const statusCode = logArr.length > 2 ? logArr[2].trim() : '未知状态码';
+                const timeCost = logArr.length > 3 ? logArr[3].trim() : '未知耗时';
+                const ip = logArr.length > 4 ? logArr[4].trim() : '未知IP';
+                const methodAndPath = logArr.length > 5 ? logArr[5].trim() : '未知方法和路径';
+
+                // 将日志写入数据库的gin表中
+                db.run(`INSERT INTO gin VALUES (?,?,?,?,?)`, [time, id, statusCode, ip, methodAndPath]);
+
+                // 如果状态码不为200，则根据id在info和err表中查找对应的日志信息
+                if (statusCode !== '200') {
+                    // 根据id在info表中查找对应的日志信息
+                    db.get(`SELECT * FROM info where id = ?`, [id], (err, row) => {
+                        if (err) {
+                            console.error(err);
+                        }else {
+                            // 如果找到了对应的日志信息，则打印出来
+                            if (row) {
+                                socket.emit('error',`${row.time} ${row.msg}`);
+                            }
+                        }
+                    });
+
+                    // 根据id在err表中查找对应的日志信息
+                    db.get(`SELECT * FROM err WHERE id = ?`, [id], (err, row) => {
+                        if (err) {
+                            console.error(err);
+                        }else {
+                            // 如果找到了对应的日志信息，则打印出来
+                            if (row) {
+                                socket.emit('error',(`${row.time} ${row.msg}`));
+                                // console.log(`${row.time} ${row.msg}`);
+                            }
+                        }
+                    });
+                    // 打印美化后的日志，不打印id和ip，耗时放到最后，方便查看
+                    socket.emit('error',(`${time} ${statusCode} ${methodAndPath} ${timeCost}`));
+                    // console.log(`${time} ${statusCode} ${methodAndPath} ${timeCost}`);
+                }else {
+                    // 打印美化后的日志，不打印id和ip，耗时放到最后，方便查看
+                    socket.emit('info',(`${time} ${statusCode} ${methodAndPath} ${timeCost}`));
+                }
+            }
+
+            function handelErr(log) {
+                log = log.replace('[ERR]', '');
+                let logArr = log.split('|');
+                let time = logArr.length > 0 ? logArr[0].trim() : '未知时间';
+                let id = logArr.length > 1 ? logArr[1].trim() : '未知ID';
+                let msg = logArr.length > 2 ? logArr[2].trim() : '未知信息';
+            
+                // 将日志写入数据库的err表中
+                db.run(`INSERT INTO err VALUES (?,?,?)`, [time, id, msg]);
+            }
+
+            function handelInfo(log) {
+                log = log.replace('[INFO]', '');
+                let logArr = log.split('|');
+                let time = logArr.length > 0 ? logArr[0].trim() : '未知时间';
+                let id = logArr.length > 1 ? logArr[1].trim() : '未知ID';
+                let msg = logArr.length > 2 ? logArr[2].trim() : '未知信息';
+            
+                // 将日志写入数据库的info表中
+                db.run(`INSERT INTO info VALUES (?,?,?)`, [time, id, msg]);
+            }
         });
     }
 }

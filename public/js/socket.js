@@ -46,6 +46,8 @@ initSqlJs().then(function(SQL){
     END;`);
 });
 
+let socket = '';
+
 async function getlogs(){
     if (ws_connected) {
         console.log('ws connected');
@@ -54,7 +56,7 @@ async function getlogs(){
     }
     ws_connected = true;
     // 连接到ws服务器
-    let socket = io(window.location.origin);
+    socket = io(window.location.origin);
     // 监听服务器发送的消息
     socket.on('log', function (data) {
         add_log(data);
@@ -86,15 +88,24 @@ async function getlogs(){
         }
         log_div.innerHTML += log_line;
         let log_container = document.querySelector('[name="container"][id="one-logs"]');
-        log_container.style.width = 'auto';
         log_container.style.height = 'auto';
         // 如果已经滚动到底部，保持滚动到底部
         if (scroll_to_bottom) {
             log_div.scrollTop = log_div.scrollHeight;
         }
         // 如果日志太多，删除前面的日志
-        if (log_div.children.length > 100) {
-            log_div.removeChild(log_div.children[0]);
-        }
+        // if (log_div.children.length > 100) {
+        //     log_div.removeChild(log_div.children[0]);
+        // }
     }
+}
+
+function clearlogs(){
+    let log_div = document.getElementById('logs');
+    log_div.innerHTML = '';
+}
+
+function stoplogs(){
+    ws_connected = false;
+    socket.disconnect();
 }

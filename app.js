@@ -85,9 +85,6 @@ process.on('uncaughtException', (err) => {
     dbManager.close();
     console.log('数据库连接已关闭');
     server.close();
-    // 检查server是否已经关闭
-    server.on('close', () => {
-        console.log('服务器已关闭');
-        process.exit();
-    });
+    console.log('服务器已关闭');
+    process.exit();
 });
