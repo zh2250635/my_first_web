@@ -75,10 +75,10 @@ function retain(){
             // 如果返回的是JSON数据，表示请求成功
             if (typeof(data) === 'object') {
                 // 清除表格中的数据(除了表头)
-                table = document.getElementById('account_info');
-                while (table.rows.length > 1) {
-                    table.deleteRow(1);
-                }
+                // table = document.getElementById('account_info');
+                // while (table.rows.length > 1) {
+                //     table.deleteRow(1);
+                // }
                 // 重新加载数据
                 get_account_info();
                 show_message('保留成功');
@@ -163,6 +163,9 @@ function checkPreview(){
         }
     }).catch((err) => {
         console.log(err);
+    }).finally(() => {
+        // 刷新数据
+        refreshAccount();
     });
 }
 
@@ -215,6 +218,9 @@ function checkAlive(){
         }
     }).catch((err) => {
         console.log(err);
+    }).finally(() => {
+        // 刷新数据
+        refreshAccount();
     });
 }
 
@@ -343,4 +349,210 @@ async function show_message(content) {
     // 让message处于最上层
     message.zIndex = 2000
     setTimeout(() => message.classList.remove('show'), 2000);
+}
+
+function get_account_info() {
+    // 携带cookie发送请求
+    fetch('/api/az_account', {
+        method: 'GET',
+        credentials: 'same-origin',
+    }).then((response) => {
+        // 如果返回状态码为200，表示请求成功
+        if (response.status === 200) {
+            var json = response.json();
+            return json;
+        }else {
+            // 否则，返回错误信息
+            return response.text();
+        }
+    }).then((data) => {
+        // 如果返回的是JSON数据，表示请求成功
+        if (typeof(data) === 'object') {
+            // 将数据缓存到localstorage中
+            localStorage.setItem('account_info_cache', JSON.stringify(data));
+
+            // 清除表格中的数据(除了表头)
+            table = document.getElementById('account_info');
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+
+            // 将返回的数据显示在页面上
+            for (let item of data){
+                // 创建新行
+                let newRow = table.insertRow(-1);
+
+                // 创建新单元格并添加数据
+                let cell1 = newRow.insertCell(0);
+                cell1.innerHTML = item.tag;
+
+                let cell2 = newRow.insertCell(1);
+                cell2.innerHTML = item.used == '1' ? "已使用" : "未使用";
+
+                let cell3 = newRow.insertCell(2);
+                cell3.innerHTML = item.sub_id_count;
+
+                let cell4 = newRow.insertCell(3);
+                cell4.innerHTML = item.preview_available == '1' ? "有权限" : "无权限";
+
+                let cell5 = newRow.insertCell(4);
+                cell5.innerHTML = item.retained == '1' ? "已保留" : "不保留";
+
+                let cell6 = newRow.insertCell(5);
+                cell6.innerHTML = item.is_alive == '1' ? "存活" : "挂了";
+
+                let cell7 = newRow.insertCell(6);
+                if(item.mail){
+                    cell7.innerHTML = item.mail.replace(/"/g, '');
+                }else{
+                    cell7.innerHTML = '未知'
+                }
+
+                let cell8 = newRow.insertCell(7);
+                cell8.innerHTML = '<input type="checkbox" value="' + item.tag + '">';
+
+                if (item.used == '0' && item.is_alive == '1' && item.preview_available == '1') {
+                    // 将背景设置为绿色
+                    newRow.style.backgroundColor = '#ccffcc';
+                }else{
+                    // 将背景设置为蓝色
+                    newRow.style.backgroundColor = '#cce5ff';
+                }
+
+                if (item.used == '1' || item.is_alive == '0') {
+                    // 将背景设置为红色
+                    newRow.style.backgroundColor = '#ffcccc';
+                }
+
+                if (item.is_alive == '0') {
+                    // 将背景设置为深红色
+                    newRow.style.backgroundColor = '#ff6666';
+                }
+            }
+            
+            // 更新统计数据
+            count_color(table);
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
+function count_color(table){
+    // 更新统计数据
+    let count_table = document.getElementById('account_type_count');
+
+    // 遍历表格的每一行（除了表头），检查背景颜色，填充统计数据
+
+    // 统计总数
+    let total_count = table.rows.length - 1;
+
+    // 统计深红色
+    let red_count = 0;
+    for (let i = 1; i < table.rows.length; i++) {
+        if (table.rows[i].style.backgroundColor == 'rgb(255, 102, 102)') {
+            red_count++;
+        }
+    }
+
+    // 统计红色
+    let light_red_count = 0;
+    for (let i = 1; i < table.rows.length; i++) {
+        if (table.rows[i].style.backgroundColor == 'rgb(255, 204, 204)') {
+            light_red_count++;
+        }
+    }
+
+    // 统计蓝色
+    let blue_count = 0;
+    for (let i = 1; i < table.rows.length; i++) {
+        if (table.rows[i].style.backgroundColor == 'rgb(204, 229, 255)') {
+            blue_count++;
+        }
+    }
+
+    // 统计绿色
+    let green_count = 0;
+    for (let i = 1; i < table.rows.length; i++) {
+        if (table.rows[i].style.backgroundColor == 'rgb(204, 255, 204)') {
+            green_count++;
+        }
+    }
+
+    // 更新统计数据
+
+    // 清除表格中的数据(除了表头)
+    while (count_table.rows.length > 1) {
+        count_table.deleteRow(1);
+    }
+
+    // 重新加载数据
+    let newRow = count_table.insertRow(-1);
+    let cell1 = newRow.insertCell(0);
+    cell1.innerHTML = total_count;
+    let cell2 = newRow.insertCell(1);
+    cell2.innerHTML = red_count;
+    let cell3 = newRow.insertCell(2);
+    cell3.innerHTML = light_red_count;
+    let cell4 = newRow.insertCell(3);
+    cell4.innerHTML = blue_count;
+    let cell5 = newRow.insertCell(4);
+    cell5.innerHTML = green_count;
+
+    // 修改对应列的背景颜色
+
+    // 总数灰色
+    cell1.style.backgroundColor = '#f2f2f2';
+
+    cell2.style.backgroundColor = '#ff6666';
+    cell3.style.backgroundColor = '#ffcccc';
+    cell4.style.backgroundColor = '#cce5ff';
+    cell5.style.backgroundColor = '#ccffcc';
+
+    let newRow2 = count_table.insertRow(-1);
+    
+    function buttomTemplate(buttomText, colourName) {
+        return `<button class="btn btn-${colourName} btn-sm" type="button" onclick="filterTable('${colourName}')" style="margin: 5px;" background-color="${colourName}">${buttomText}</button>`;
+    }
+
+    let cell6 = newRow2.insertCell(0);
+    cell6.innerHTML = buttomTemplate('选择深全部', 'all');
+
+    let cell7 = newRow2.insertCell(1);
+    cell7.innerHTML = buttomTemplate('选择深红色', 'rgb(255, 102, 102)');
+
+    let cell8 = newRow2.insertCell(2);
+    cell8.innerHTML = buttomTemplate('选择红色', 'rgb(255, 204, 204)');
+
+    let cell9 = newRow2.insertCell(3);
+    cell9.innerHTML = buttomTemplate('选择蓝色', 'rgb(204, 229, 255)');
+
+    let cell10 = newRow2.insertCell(4);
+    cell10.innerHTML = buttomTemplate('选择绿色', 'rgb(204, 255, 204)');
+}
+
+function filterTable(colour) {
+    let table = document.getElementById('account_info');
+    if (colour === 'all') {
+        for (let i = 1; i < table.rows.length; i++) {
+            if (table.rows[i]['cells'][7].children[0].checked) {
+                // 取消选中所有行
+                table.rows[i]['cells'][7].children[0].checked = false;
+            }else{
+                // 选中所有行
+                table.rows[i]['cells'][7].children[0].checked = true;
+            }
+        }
+    }
+    for (let i = 1; i < table.rows.length; i++) {
+        if (table.rows[i].style.backgroundColor === colour) {
+            if (table.rows[i]['cells'][7].children[0].checked) {
+                // 取消选中对应颜色的行
+                table.rows[i]['cells'][7].children[0].checked = false;
+            }else{
+                // 选中对应颜色的行
+                table.rows[i]['cells'][7].children[0].checked = true;
+            }
+        }
+    }
 }
