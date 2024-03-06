@@ -15,7 +15,7 @@ module.exports = (dbManager) => {
                 preview_available,is_alive,retained,mail
             FROM rbac
             WHERE tag LIKE '${process.env.SOURCE}-%' AND is_deleted = 0
-            ORDER BY tag;
+            ORDER BY id ASC;
         `;
 
         dbManager.run('az_accounts', sql)
