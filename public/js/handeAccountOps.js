@@ -101,127 +101,149 @@ function refreshAccount(){
     get_account_info()
 }
 
-function get_select_tags(){
+function get_select_tags(select_all = false){
     let container = document.getElementById('az_account');
     // 找到container下所有的input元素
     var inputs = container.getElementsByTagName('input');
     var tags = [];
     for (var i = 0; i < inputs.length; i++) {
-        if (inputs[i].type == 'checkbox' && inputs[i].checked == true) {
-            tags.push(inputs[i].value);
+        if (select_all) {
+            if (inputs[i].type == 'checkbox') {
+                tags.push(inputs[i].value);
+            }
+        }else{
+            if (inputs[i].type == 'checkbox' && inputs[i].checked) {
+                tags.push(inputs[i].value);
+            }
         }
     }
     return tags.join(',');
 }
 
-function checkPreview(){
+async function checkPreview(){
     let preview_tags = get_select_tags();
     // 如果preview_tags为空, 则发出提示
     if (preview_tags == '') {
-        alert('请选择要检查权限的账号');
-        return;
-    }
-    // 如果大于1个账号，则发出提示
-    if (preview_tags.split(',').length > 1) {
-        alert('放过我吧，一次只能检查一个账号');
-        return;
-    }
-    show_message('检查中，不要刷新。。。')
-    // 发送请求
-    fetch('/api/az_account/preview', {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({preview_tag: preview_tags}),
-    }).then((response) => {
-        // 如果返回状态码为200，表示请求成功
-        if (response.status === 200) {
-            var json = response.json();
-            return json;
-        }else {
-            // 否则，返回错误信息
-            return response.text();
+        if(!confirm('你没有选择任何账号，将检查所有账号，确定要继续吗？')) {
+            return;
         }
-    }).then((data) => {
-        // 如果返回的是JSON数据，表示请求成功
-        if (typeof(data) === 'object') {
-            // 如果检查成功
-            if (data.code == 1) {
-                // 显示检查结果
-                alert(data.msg);
-            }else{
-                // 显示检查结果
-                alert(data.msg);
-            }
-        }else{
-            alert(data);
-            // 刷新数据
-            refreshAccount();
+        let all_tags = get_select_tags(true);
+        preview_tags = all_tags;
+    }
 
+    // 如果大于1个账号，则发出提示
+    if (preview_tags) {
+        for (let tag of preview_tags.split(',')) {
+            if(tag == '') continue;
+            await checkPreviewSingle(tag);
         }
-    }).catch((err) => {
-        console.log(err);
-    }).finally(() => {
-        // 刷新数据
-        refreshAccount();
-    });
+    }
+
+    async function checkPreviewSingle(tag) {
+        show_message(`检查${tag}中，不要刷新。。。`)
+        // 发送请求
+        await fetch('/api/az_account/preview', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({preview_tag: tag}),
+        }).then((response) => {
+            // 如果返回状态码为200，表示请求成功
+            if (response.status === 200) {
+                var json = response.json();
+                return json;
+            }else {
+                // 否则，返回错误信息
+                return response.text();
+            }
+        }).then((data) => {
+            // 如果返回的是JSON数据，表示请求成功
+            if (typeof(data) === 'object') {
+                // 如果检查成功
+                if (data.code == 1) {
+                    // 显示检查结果
+                    alert(data.msg);
+                }else{
+                    // 显示检查结果
+                    alert(data.msg);
+                }
+            }else{
+                alert(data);
+                // 刷新数据
+                refreshAccount();
+
+            }
+        }).catch((err) => {
+            console.log(err);
+        })
+    }
+    // 刷新数据
+    refreshAccount();
 }
 
-function checkAlive(){
+async function checkAlive(){
     let alive_tags = get_select_tags();
     // 如果alive_tags为空, 则发出提示
     if (alive_tags == '') {
-        alert('请选择要检查权限的账号');
-        return;
+        let all_tags = get_select_tags(true);
+        if (!confirm('你没有选择任何账号，将检查所有账号，确定要继续吗？')) {
+            return;
+        }
+        alive_tags = all_tags;
     }
-    // 如果大于1个账号，则发出提示
-    if (alive_tags.split(',').length > 1) {
-        alert('放过我吧，一次只能检查一个账号');
-        return;
-    }
-    show_message('检查中，不要刷新。。。')
-    // 发送请求
 
-    fetch('/api/az_account/alive', {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({alive_tag: alive_tags}),
-    }).then((response) => {
-        // 如果返回状态码为200，表示请求成功
-        if (response.status === 200) {
-            var json = response.json();
-            return json;
-        }else {
-            // 否则，返回错误信息
-            return response.text();
+    if (alive_tags) {
+        for (let tag of alive_tags.split(',')) {
+            if(tag == '') continue;
+            await checkAliveSingle(tag);
         }
-    }).then((data) => {
-        // 如果返回的是JSON数据，表示请求成功
-        if (typeof(data) === 'object') {
-            // 如果检查成功
-            if (data.code == 1) {
-                // 显示检查结果
-                alert(data.msg);
-            }else{
-                // 显示检查结果
-                alert(data.msg);
+    }
+
+    // 单个账号检查函数
+    async function checkAliveSingle(tag) {
+        show_message(`检查${tag}中，不要刷新。。。`)
+        // 发送请求
+        await fetch('/api/az_account/alive', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({alive_tag: tag}),
+        }).then((response) => {
+            // 如果返回状态码为200，表示请求成功
+            if (response.status === 200) {
+                var json = response.json();
+                return json;
+            }else {
+                // 否则，返回错误信息
+                return response.text();
             }
-        }else{
-            alert(data);
-            // 刷新数据
-            refreshAccount();
-        }
-    }).catch((err) => {
-        console.log(err);
-    }).finally(() => {
-        // 刷新数据
-        refreshAccount();
-    });
+        }).then((data) => {
+            // 如果返回的是JSON数据，表示请求成功
+            if (typeof(data) === 'object') {
+                // 如果检查成功
+                if (data.code == 1) {
+                    // 显示检查结果
+                    alert(data.msg);
+                }else{
+                    // 显示检查结果
+                    alert(data.msg);
+                }
+            }else{
+                alert(data);
+                // 刷新数据
+                refreshAccount();
+            }
+        }).catch((err) => {
+            console.log(err);
+        })
+    }
+
+    // 刷新数据
+    refreshAccount();
 }
 
 function apply(){
@@ -283,13 +305,15 @@ function deploy(){
     let tags = get_select_tags();
     // 如果tags为空, 则发出提示
     if (tags == '') {
-        alert('请选择要部署的账号');
-        return;
+        // 让用户选择要不要继续
+        if(!confirm('你没有选择任何账号，将采用自动部署模式，确定要继续吗？')) {
+            return;
+        }
     }
 
     // 如果大于1个账号，则发出提示
     if (tags.split(',').length > 1) {
-        alert('放过我吧，一次只能部署一个账号');
+        alert('一次只能部署一个账号');
         return;
     }
 
@@ -331,24 +355,32 @@ function deploy(){
 }
 
 async function show_message(content) {
-    var message = document.getElementById('message');
+    // 创建一个新的消息元素
+    var message = document.createElement('div');
     message.textContent = content;
-    // 获取页面的宽度（不含滚动条）
+    message.className = 'message'; // 设置CSS类
+    message.id = 'message'; // 设置id
+    document.body.appendChild(message); // 将消息添加到页面中
+
+    // 等待页面的其他元素加载完毕，确保获取正确的尺寸和位置
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    // 计算和设置消息的位置
     var width = document.documentElement.clientWidth;
-    // 获取页面的高度（不含滚动条）
     var height = document.documentElement.clientHeight;
-    // 获取message的宽度
     var message_width = message.offsetWidth;
-    // 获取message的高度
     var message_height = message.offsetHeight;
-    // 设置message的位置
     message.style.left = (width - message_width) / 2 + 'px';
+    // 这里使用的是消息高度的累加来避免消息重叠
     message.style.top = (height - message_height) / 10 + 'px';
-    // 显示message
+
+    // 显示消息，并在2秒后消失
     message.classList.add('show');
-    // 让message处于最上层
-    message.zIndex = 2000
-    setTimeout(() => message.classList.remove('show'), 2000);
+    setTimeout(() => {
+        message.classList.remove('show');
+        // 消息消失后从页面中移除元素
+        document.body.removeChild(message);
+    }, 2000);
 }
 
 function get_account_info() {

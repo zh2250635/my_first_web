@@ -64,7 +64,7 @@ module.exports = (dbManager) => {
         dbManager.run('az_accounts', sql)
             .then(result => {
                 if (result.length == 0) {
-                    res.status(200).json({msg: '没有找到该账号', code: 0});
+                    res.status(200).json({msg: `没有找到账号${preview_tag}`, code: 0});
                 }else {
                     // 读取info
                     let info = JSON.parse(result[0].info);
@@ -73,7 +73,7 @@ module.exports = (dbManager) => {
                     // 检查预览功能
                     check_preview(credential, info.subscriptionIds).then((result) => {
                         if (result.status == 'success') {
-                            res.status(200).json({msg: `检查成功，Azure OpenAI 可用数量：${result.num}/${result.total} (可用/总数)`, code: 1});
+                            res.status(200).json({msg: `检查成功，账号${preview_tag}Azure OpenAI 可用数量：${result.num}/${result.total} (可用/总数)`, code: 1});
                             // 更新数据库
 
                             let sql;
@@ -88,7 +88,7 @@ module.exports = (dbManager) => {
                                     console.log(err);
                                 });
                         }else {
-                            res.status(200).json({msg: '检查失败，请检查账号信息', code: 0});
+                            res.status(200).json({msg: `检查失败，账号${preview_tag}，请检查账号信息`, code: 0});
                         }
                     });
                 }
@@ -107,7 +107,7 @@ module.exports = (dbManager) => {
         dbManager.run('az_accounts', sql)
             .then(result => {
                 if (result.length == 0) {
-                    res.status(200).json({msg: '没有找到该账号', code: 0});
+                    res.status(200).json({msg: `没有找到账号${alive_tag}`, code: 0});
                 }else {
                     // 读取info
                     let info = JSON.parse(result[0].info);
@@ -116,7 +116,7 @@ module.exports = (dbManager) => {
                     // 检查预览功能
                     is_account_alive(credential, info.subscriptionIds).then((result) => {
                         if (result){
-                            res.status(200).json({msg: '账号可用', code: 1});
+                            res.status(200).json({msg: `账号${alive_tag}可用`, code: 1});
                             // 更新数据库
                             let sql = `UPDATE rbac SET is_alive = 1 WHERE tag = '${alive_tag}';`;
 
@@ -126,7 +126,8 @@ module.exports = (dbManager) => {
                                     console.log(err);
                                 });
                         }else{
-                            res.status(200).json({msg: '账号不可用', code: 0});
+                            res.status(200).json({msg: `账号${alive_tag}不可用`, code: 0});
+
                             // 更新数据库
                             let sql = `UPDATE rbac SET is_alive = 0 WHERE tag = '${alive_tag}';`;
 
@@ -153,7 +154,7 @@ module.exports = (dbManager) => {
         dbManager.run('az_accounts', sql)
             .then(result => {
                 if (result.length == 0) {
-                    res.status(200).json({msg: '没有找到该账号', code: 0});
+                    res.status(200).json({msg: `没有找到账号${apply_tag}`, code: 0});
                 }else {
                     // 读取info
                     let info = JSON.parse(result[0].info);
