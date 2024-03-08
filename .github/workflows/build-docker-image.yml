@@ -25,4 +25,16 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: xhtnext/myweb:latest  # 修改为您的实际镜像名称和标签
+        tags: xhtnext/myweb:latest
+    
+    - name: Update image on my server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          workdir=~/allMyweb
+          docker-compose -f $workdir/docker-compose.yml down
+          docker-compose -f $workdir/docker-compose.yml pull
+          docker-compose -f $workdir/docker-compose.yml up -d
