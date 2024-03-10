@@ -1,0 +1,48 @@
+/* 这个css针对id为tps-detail的一些特殊子元素 */
+
+
+#tps-detail #tps-detail-form {
+    margin-bottom: 20px; /* Space between the form and the next div */
+    text-align: center; /* Center the form */
+}
+
+#tps-detail #tps-detail-form tps-detail-model-input {
+    margin-right: 10px; /* Space between the input fields */
+}
+
+/* 标签 */
+#tps-detail #tps-detail-form label {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+    display: inline-block; /* Aligns the label text with the input */
+}
+
+/* 输入框 */
+#tps-detail #tps-detail-form input {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 8px;
+    margin-bottom: 10px; /* Space between the input fields */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#tps-detail #tps-detail-form input[type="number"] {
+    width: 100px; /* Set the width of the number input */
+}
+
+#tps-detail #tps-detail-form datalist {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+
+#tps-detail #tps-detail-info {
+    background-color: #f2f2f2;
+    /* padding: 20px; */
+    margin-top: 20px; /* Space between the input section and this div */
+    border-radius: 8px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}

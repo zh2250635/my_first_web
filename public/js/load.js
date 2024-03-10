@@ -106,11 +106,23 @@ function load_account_info() {
     count_color(table);
 }
 
+function draw_default_img() {
+    var canvas = document.getElementById('tps-detail-chart');
+    var img = document.getElementById('tests');
+
+    var ctx = canvas.getContext('2d');
+
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    console.log(img.src);
+}
+
 function test() {
     // 加载账号信息
     load_account_info();
     // 加载oneapi_channels信息
     load_oneapi_channels();
+    // 绘制默认图像
+    draw_default_img();
 }
 
 window.addEventListener('load', () => {

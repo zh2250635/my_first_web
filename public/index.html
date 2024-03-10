@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/logs.css">
+    <link rel="stylesheet" href="/css/tps.css">
     <script src="/js/sql-wasm.js"></script>
     <script src="/js/index.js"></script>
     <script src="/js/load.js"></script>
@@ -12,6 +13,9 @@
     <script src="js/handleOneapiOps.js"></script>
     <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
     <script src="js/socket.js"></script>
+    <script src="js/tps.js"></script>
+    <!-- 导入chart.js -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
     <title>控制面板</title>
 </head>
 <body>
@@ -110,6 +114,36 @@
                 <button onclick="stoplogs(this)">停止日志</button>
             </div>
         </div>
+
+        <div name="container" id="tps-detail">
+            <h1 id="tps-detail">TPS详情</h1>
+
+            <div id="tps-detail-form">
+                <label for="tps-detail-model">模型:</label>
+                <input list = "models-list" id="tps-detail-model-input" name="tps-detail-model" required> 
+                    <datalist id="models-list">
+                        <option value="gpt-4-32k-1106-preview">
+                        <option value="gpt-4-32k">
+                        <option value="gpt-3.5-turbo">
+                    </datalist>
+                    
+                <lable for="tps-count-time-length">时间长度(分钟):</lable>
+                <input type="number" id="tps-count-time-length" name="tps-count-time-length" required>
+            </div>
+
+            <div id="tps-detail-info">
+                <canvas id="tps-detail-chart" width="1080" height="680"></canvas>
+            </div>
+
+            <img id="tps-detail-loading" src="images/loading.gif" alt="loading" style="display: none;">
+
+            <img id="tps-detail-error" src="images/error.png" alt="error" style="display: none;">
+
+            <img id="tests" src="images/background.jpg" alt="tests" style="display: none;">
+
+            <div class="buttons">
+                <button onclick="get_avg_tps(this)">查询</button>
+            </div>
     </div>
 </body>
 </html>

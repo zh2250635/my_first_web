@@ -11,6 +11,7 @@ class DatabaseConnectionManager {
 
   createConnection(dbName) {
     if (dbName === 'oneapi') {
+      console.log('正在连接oneapi数据库');
         return mysql.createConnection({
             host: process.env.ONE_DB_HOST,
             user: process.env.ONE_DB_USER,
@@ -19,6 +20,7 @@ class DatabaseConnectionManager {
             port: process.env.ONE_DB_PORT || 3306,
         });
     } else if (dbName === 'az_accounts') {
+      console.log('正在连接az_accounts数据库');
         return mysql.createConnection({
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
