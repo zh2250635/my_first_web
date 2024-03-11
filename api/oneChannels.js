@@ -122,5 +122,53 @@ module.exports = (dbManager) => {
         });
     });
 
+    router.post('/raise', (req, res) => {
+        let tag = req.body?.tag || '';
+        if (tag.split('-').length > 2) {
+            tag = tag.split('-')[0]+'-'+tag.split('-')[1];
+        }
+        if (tag === '') {
+            res.status(400).send('参数错误');
+            return;
+        }
+        let sql = `
+            UPDATE channels
+            SET priority = 23
+            WHERE name LIKE '${tag}%'
+        `;
+
+        dbManager.run('oneapi', sql)
+        .then(result => {
+            res.status(200).json({msg: `${tag}的优先级提高成功`, code: 1});
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send('数据库更新失败');
+        });
+    });
+
+    router.post('/lower', (req, res) => {
+        let tag = req.body?.tag || '';
+        if (tag.split('-').length > 2) {
+            tag = tag.split('-')[0]+'-'+tag.split('-')[1];
+        }
+        if (tag === '') {
+            res.status(400).send('参数错误');
+            return;
+        }
+        let sql = `
+            UPDATE channels
+            SET priority = 22
+            WHERE name LIKE '${tag}%'
+        `;
+
+        dbManager.run('oneapi', sql)
+        .then(result => {
+            res.status(200).json({msg: `${tag}的优先级降低成功`, code: 1});
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send('数据库更新失败');
+        });
+    });
+
     return router;
 }

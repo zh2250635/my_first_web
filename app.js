@@ -16,6 +16,7 @@ const getAccountRouter = require('./api/az_account.js')(dbManager);
 const oneapiRouter = require('./api/oneapi.js')(dbManager);
 const oneapiRouter2 = require('./api/oneChannels.js')(dbManager);
 const tpsRouter = require('./api/channel_tps_count.js')(dbManager);
+const configRouter = require('./api/config.js');
 
 function auth(req, res, next) {
     const token = req.cookies.jwt;
@@ -51,6 +52,7 @@ app.use('/api/az_account', getAccountRouter); // 使用获取账号信息路由
 app.use('/api/oneapi', oneapiRouter); // 使用获取oneapi信息路由
 app.use('/api/oneChannels', oneapiRouter2); // 使用获取oneapi信息路由
 app.use('/api/tps', tpsRouter); // 使用获取oneapi信息路由
+app.use('/api/config', configRouter); // 使用配置信息信息路由
 
 // 为静态文件（如HTML、CSS、JavaScript文件）设置一个目录
 app.use(express.static('public'));

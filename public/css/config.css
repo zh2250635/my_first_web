@@ -1,0 +1,66 @@
+/* 只针对id=config_settings的元素 */
+
+#config_settings .switch-field {
+  display: flex;
+  margin-bottom: 1em;
+}
+
+/* 用于隐藏input元素 */
+#config_settings .switch-field input {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  width: 1px;
+  border: 0;
+  overflow: hidden;
+}
+
+#config_settings .switch-field label {
+    background-color: #f5f0f0;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    line-height: 1;
+    text-align: center;
+    padding: 8px 16px;
+    margin-right: -1px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.1s ease-in-out;
+    width: 100%;
+}
+
+#config_settings .switch-field label:hover {
+    cursor: pointer;
+}
+
+#config_settings .switch-field input:checked + label {
+    background-color: #a5dc86;
+    box-shadow: none;
+}
+
+#config_settings .switch-field label:first-of-type {
+    border-radius: 4px 0 0 4px;
+}
+
+#config_settings .switch-field label:last-of-type {
+    border-radius: 0 4px 4px 0;
+}
+
+#config_settings .inline-block-div {
+    display: flex;
+    flex-wrap: nowrap;
+    width:auto;
+}
+
+#config_settings > form > div {
+    font-size: 20px;
+}
+
+#config_settings .none-switch-field {
+    display: flex;
+    margin-bottom: 1em;
+}
+
+#config_settings .margin-right-1em {
+    margin-right: 0.6em;
+}

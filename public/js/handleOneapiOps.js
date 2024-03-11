@@ -39,6 +39,9 @@ function add_listener_to_oneapi_form() {
         }
         ).catch((err) => {
             console.log(err);
+        }).finally(() => {
+            document.getElementById('oneapi_req').style.width = 'auto';
+            document.getElementById('oneapi_req').style.height = 'auto';
         });
     });
 }
@@ -118,12 +121,15 @@ function refresh(){
         }
     }).catch((err) => {
         console.log(err);
+    }).finally(() => {
+        document.getElementById('oneapi_channels').style.width = 'auto';
+        document.getElementById('oneapi_channels').style.height = 'auto';
     });
 }
 
-function deleteChannels(){
+function deleteChannels(names = null){
     // 获取选择的通道名称
-    let names = get_select_names();
+    names = names || get_select_names();
     if (names.length == 0) {
         alert('请选择要删除的通道');
         return;
@@ -169,6 +175,101 @@ function deleteUseless(){
         headers: {
             'Content-Type': 'application/json',
         },
+    }).then((response) => {
+        // 如果返回状态码为200，表示请求成功
+        if (response.status === 200) {
+            var json = response.json();
+            return json;
+        }else {
+            // 否则，返回错误信息
+            return response.text();
+        }
+    }).then((data) => {
+        // 如果返回的是JSON数据，表示请求成功
+        if (typeof(data) === 'object') {
+            alert(data.msg);
+            refresh();
+        }else{
+            alert(data);
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
+async function raise(){
+    // 获取选择的通道名称
+    let names = get_select_names();
+    if (names.length == 0) {
+        alert('请选择要提升优先级的通道');
+        return;
+    }
+    if(!confirm(`确定要提升${names}的优先级吗？`)){
+        return;
+    }
+    for (let i = 0; i < names.length; i++) {
+        await raiseOne(names[i]);
+    }
+}
+
+async function raiseOne(tag){
+    show_message('正在提升'+tag+'的优先级');
+    // 发送请求
+    fetch('/api/oneChannels/raise', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({tag: tag}),
+    }).then((response) => {
+        // 如果返回状态码为200，表示请求成功
+        if (response.status === 200) {
+            var json = response.json();
+            return json;
+        }else {
+            // 否则，返回错误信息
+            return response.text();
+        }
+    }).then((data) => {
+        // 如果返回的是JSON数据，表示请求成功
+        if (typeof(data) === 'object') {
+            alert(data.msg);
+            refresh();
+        }else{
+            alert(data);
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
+
+async function lower(){
+    // 获取选择的通道名称
+    let names = get_select_names();
+    if (names.length == 0) {
+        alert('请选择要降低优先级的通道');
+        return;
+    }
+    if(!confirm(`确定要降低${names}的优先级吗？`)){
+        return;
+    }
+    for (let i = 0; i < names.length; i++) {
+        await lowerOne(names[i]);
+    }
+}
+
+async function lowerOne(tag){
+    show_message('正在降低'+tag+'的优先级');
+    // 发送请求
+    fetch('/api/oneChannels/lower', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({tag: tag}),
     }).then((response) => {
         // 如果返回状态码为200，表示请求成功
         if (response.status === 200) {

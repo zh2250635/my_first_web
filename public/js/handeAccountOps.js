@@ -301,8 +301,8 @@ function apply(){
     });
 }
 
-function deploy(){
-    let tags = get_select_tags();
+function deploy(tags = null){
+    tags = tags || get_select_tags();
     // 如果tags为空, 则发出提示
     if (tags == '') {
         // 让用户选择要不要继续
@@ -467,6 +467,9 @@ function get_account_info() {
         }
     }).catch((err) => {
         console.log(err);
+    }).finally(() => {
+        document.getElementById('az_account').style.width = 'auto';
+        document.getElementById('az_account').style.height = 'auto';
     });
 }
 
@@ -587,4 +590,24 @@ function filterTable(colour) {
             }
         }
     }
+}
+
+function deleteAndDeploy(){
+    let tags = get_select_tags();
+    // 如果tags为空, 则发出提示
+    if (tags == '') {
+        alert('请选择要删除并部署的账号');
+        return;
+    }
+    // 如果大于1个账号，则发出提示
+    if (tags.split(',').length > 1) {
+        alert('一次只能删除并部署一个账号');
+        return;
+    }
+    show_message('删除并部署中，不要刷新。。。')
+    // 调用删除函数
+    deleteChannels(tags);
+
+    // 调用部署函数
+    deploy(tags);
 }

@@ -123,6 +123,8 @@ function test() {
     load_oneapi_channels();
     // 绘制默认图像
     draw_default_img();
+    // 加载配置信息
+    loadConfigData();
 }
 
 window.addEventListener('load', () => {

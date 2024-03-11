@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/logs.css">
     <link rel="stylesheet" href="/css/tps.css">
+    <link rel="stylesheet" href="/css/config.css">
     <script src="/js/sql-wasm.js"></script>
     <script src="/js/index.js"></script>
     <script src="/js/load.js"></script>
@@ -14,6 +15,7 @@
     <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
     <script src="js/socket.js"></script>
     <script src="js/tps.js"></script>
+    <script src="js/config_handeler.js"></script>
     <!-- 导入chart.js -->
     <script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
     <title>控制面板</title>
@@ -49,12 +51,13 @@
 
             <div class="buttons">
                 <button onclick="refreshAccount(this)">刷新</button>
-                <button onclick="deleteAccounts(this)">删除</button>
-                <button onclick="retain(this)">保留</button>
+                <button onclick="deleteAccounts(this)" title="会将账号进行软删除，即标记为已经删除，但是实际任然存在于数据库中，如果希望恢复或者彻底删除，需要进入数据库操作">删除</button>
+                <button onclick="retain(this)" title="保留的账号不会被自动部署程序使用，想要解除保留，再次点击保留即可">保留</button>
                 <button onclick="checkPreview(this)">检查权限</button>
                 <button onclick="checkAlive(this)">检查存活</button>
                 <button onclick="apply(this)">申请</button>
-                <button onclick="deploy(this)">部署</button>
+                <button onclick="deploy(this)" title="一次只能选择部署一个账号，如果没有选择任何账号，则默认触发一次自动部署">部署</button>
+                <button onclick="deleteAndDeploy(this)" title="删除oneapi内已经存在的该账号的渠道并重新部署，用于某些情况下，部署没有完全推送到oneapi的情况，真正的Azure资源没有删除！">删除并部署</button>
             </div>
         </div>
 
@@ -95,9 +98,69 @@
             </table>
             <div class="buttons">
                 <button onclick="refresh(this)">刷新</button>
-                <button onclick="deleteUseless(this)">删除禁用</button>
-                <!-- <button onclick="raise(this)">提高优先级</button> -->
-                <button onclick="deleteChannels(this)">删除</button>
+                <button onclick="deleteUseless(this)" title="删除数据库中被认为是Azure( name以环境变量的source为前缀, 例如zh或bq )且被标记为禁用的渠道">删除禁用</button>
+                <button onclick="raise(this)" title="将优先级提升为23，对整个账号下的渠道生效">提高优先级</button>
+                <button onclick="lower(this)" title="将优先级降低为22，对整个账号下的渠道生效，当然，自动脚本大概会影响结果，如果没有调整数量的话">降低优先级</button>
+                <button onclick="deleteChannels(this)" title="删除选择的分组，只针对选择的分组生效">删除</button>
+            </div>
+        </div>
+
+        <div name="container" id="config_settings">
+            <h1 id="config_settings_title">配置文件设置</h1>
+            <form id="config_settings_form">
+
+                <div title="自动部署时采用的账号源，一般不需要修改" class="none-switch-field">
+                    <label for="config_settings_source" class="margin-right-1em">账号源: </label>
+                    <input type="text" id="config_settings_source" name="config_settings_source" required disabled>
+                </div>
+
+                <div title="一般为id，无需更改" class="inline-block-div">
+                    <label for="config_settings_count_by" class="margin-right-1em">计数方式: </label>
+                    <span class="switch-field">
+                        <input type="radio" id="config_settings_count_by_id" name="config_settings_count_by" value="id">
+                        <label for="config_settings_count_by_id">id</label>
+                        <input type="radio" id="config_settings_count_by_account" name="config_settings_count_by" value="account">
+                        <label for="config_settings_count_by_account">account</label>
+                    </span>
+                </div>
+
+                <div title="目标数目，单位取决于计数方式，是系统期望的最小数目" class="none-switch-field">
+                    <label for="config_settings_aim_number" class="margin-right-1em">目标数目: </label>
+                    <input type="number" id="config_settings_aim_number" name="config_settings_aim_number" required>
+                </div>
+
+                <div title="账号封禁时，发送邮件的邮箱地址，可以设置多个，用逗号分隔" class="none-switch-field">
+                    <label for="config_settings_notification_mails" class="margin-right-1em">邮箱地址: </label>
+                    <input type="text" id="config_settings_notification_mails" name="config_settings_notification_mails" required>
+                </div>
+
+                <div title="是否启用脚本，如果不启用，则脚本功能完全失效" class="inline-block-div">
+                    <label for="config_settings_enable_script" class="margin-right-1em">启用脚本: </label>
+                    <span class="switch-field">
+                        <input type="radio" id="config_settings_enable_script_true" name="config_settings_enable_script" value="true">
+                        <label for="config_settings_enable_script_true">是</label>
+                        <input type="radio" id="config_settings_enable_script_false" name="config_settings_enable_script" value="false">
+                        <label for="config_settings_enable_script_false">否</label>
+                    </span>
+                </div>
+
+                <div title="是否启动自动部署，如果不启用，则自动部署功能完全失效" class="inline-block-div">
+                    <label for="config_settings_enable_auto_deploy" class="margin-right-1em">启用自动部署: </label>
+                    <span class="switch-field">
+                        <input type="radio" id="config_settings_enable_auto_deploy_true" name="config_settings_enable_auto_deploy" value="true">
+                        <label for="config_settings_enable_auto_deploy_true">是</label>
+                        <input type="radio" id="config_settings_enable_auto_deploy_false" name="config_settings_enable_auto_deploy" value="false">
+                        <label for="config_settings_enable_auto_deploy_false">否</label>
+                    </span>
+                </div>
+
+                <div title="预部署数量，单位取决于计数方式，为0时禁用。用于缓解新旧账号更替时，由于部署时间过短，出现的404错误，推荐设置为1" class="none-switch-field">
+                    <label for="config_settings_pre_deploy_count" class="margin-right-1em">预部署数量: </label>
+                    <input type="number" id="config_settings_pre_deploy_count" name="config_settings_pre_deploy_count" required>
+                </div>
+            </form>
+            <div class="buttons">
+                <button onclick="submitConfigForm()" id="config_settings_submit">保存</button>
             </div>
         </div>
 
