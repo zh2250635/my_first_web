@@ -127,9 +127,10 @@ function refresh(){
     });
 }
 
-function deleteChannels(names = null){
+function deleteChannels(my_names = null){
     // 获取选择的通道名称
-    names = names || get_select_names();
+    let names = get_select_names();
+    console.log(names);
     if (names.length == 0) {
         alert('请选择要删除的通道');
         return;

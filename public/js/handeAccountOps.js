@@ -1,8 +1,8 @@
 function deleteAccounts(){
     let delete_accounts = get_select_tags();
     // 如果delete_accounts为空，则发出提示
-    if (delete_accounts == '') {
-        show_message('请选择要删除的账号');
+    if (delete_accounts == '' ) {
+        alert('请选择要删除的账号');
         return;
     }else{
         if (confirm(`确定要删除账号${delete_accounts}吗？`)) {
@@ -52,7 +52,7 @@ function retain(){
     let retain_accounts = get_select_tags();
     // 如果retain_accounts为空，则发出提示
     if (retain_accounts == '') {
-        show_message('请选择要保留的账号');
+        alert('请选择要保留的账号');
         return;
     }else{
         fetch('/api/az_account', {
@@ -301,8 +301,10 @@ function apply(){
     });
 }
 
-function deploy(tags = null){
-    tags = tags || get_select_tags();
+function deploy() {
+    let tags = get_select_tags();
+    console.log('tags: ' + tags);
+    console.log(typeof(tags));
     // 如果tags为空, 则发出提示
     if (tags == '') {
         // 让用户选择要不要继续
@@ -592,22 +594,22 @@ function filterTable(colour) {
     }
 }
 
-function deleteAndDeploy(){
-    let tags = get_select_tags();
-    // 如果tags为空, 则发出提示
-    if (tags == '') {
-        alert('请选择要删除并部署的账号');
-        return;
-    }
-    // 如果大于1个账号，则发出提示
-    if (tags.split(',').length > 1) {
-        alert('一次只能删除并部署一个账号');
-        return;
-    }
-    show_message('删除并部署中，不要刷新。。。')
-    // 调用删除函数
-    deleteChannels(tags);
+// function deleteAndDeploy(){
+//     let tags = get_select_tags();
+//     // 如果tags为空, 则发出提示
+//     if (tags == '') {
+//         alert('请选择要删除并部署的账号');
+//         return;
+//     }
+//     // 如果大于1个账号，则发出提示
+//     if (tags.split(',').length > 1) {
+//         alert('一次只能删除并部署一个账号');
+//         return;
+//     }
+//     show_message('删除并部署中，不要刷新。。。')
+//     // 调用删除函数
+//     deleteChannels(tags);
 
-    // 调用部署函数
-    deploy(tags);
-}
+//     // 调用部署函数
+//     deploy(tags);
+// }
