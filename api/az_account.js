@@ -264,7 +264,8 @@ module.exports = (dbManager) => {
 
         let data = {
             'source': process.env.SOURCE,
-            tag
+            tag,
+            'onetoken': process.env.ONEAPI_TOKEN
         }
 
         let response = await fetch(fetchUrl, {

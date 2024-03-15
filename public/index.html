@@ -58,6 +58,7 @@
                 <button onclick="apply(this)">申请</button>
                 <button onclick="deploy(this)" title="一次只能选择部署一个账号，如果没有选择任何账号，则默认触发一次自动部署">部署</button>
                 <button onclick="deleteAndDeploy(this)" title="删除oneapi内已经存在的该账号的渠道并重新部署，用于某些情况下，部署没有完全推送到oneapi的情况，真正的Azure资源没有删除！">删除并部署</button>
+                <button onclick="deleteDeployMentsInAccount()" title="直接删除账号内的所有部署，和从Azure oprtal删除和清理一样的效果">从Azure删除部署(beta)</button>
             </div>
         </div>
 
