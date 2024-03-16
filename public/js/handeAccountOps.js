@@ -1,89 +1,87 @@
-function deleteAccounts(){
+function deleteAccounts() {
     let delete_accounts = get_select_tags();
     // 如果delete_accounts为空，则发出提示
-    if (delete_accounts == '' ) {
-        alert('请选择要删除的账号');
+    if (delete_accounts == '') {
+        Swal.fire({
+            title: '错误',
+            text: '请选择要删除的账号',
+            icon: 'error',
+            confirmButtonText: '确认'
+        })
         return;
-    }else{
-        if (confirm(`确定要删除账号${delete_accounts}吗？`)) {
-            console.log('delete_accounts: ' + delete_accounts);
-            // 发送请求
-            fetch('/api/az_account', {
-                method: 'DELETE',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({delete_accounts: delete_accounts}),
-            }).then((response) => {
-                // 如果返回状态码为200，表示请求成功
-                if (response.status === 200) {
-                    var json = response.json();
-                    return json;
-                }else {
-                    // 否则，返回错误信息
-                    return response.text();
-                }
-            }).then((data) => {
-                // 如果返回的是JSON数据，表示请求成功
-                if (typeof(data) === 'object') {
-                    // 清除表格中的数据(除了表头)
-                    table = document.getElementById('account_info');
-                    while (table.rows.length > 1) {
-                        table.deleteRow(1);
+    } else {
+        Swal.fire({
+            title: '确认删除',
+            text: `确定要删除账号${delete_accounts}吗？`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '确认',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: '正在删除',
+                    text: `正在删除账号${delete_accounts}，不要刷新。。。`,
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                });
+                console.log('delete_accounts: ' + delete_accounts);
+                // 发送请求
+                fetch('/api/az_account', {
+                    method: 'DELETE',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ delete_accounts: delete_accounts }),
+                }).then((response) => {
+                    // 如果返回状态码为200，表示请求成功
+                    if (response.status === 200) {
+                        var json = response.json();
+                        return json;
+                    } else {
+                        // 否则，返回错误信息
+                        return response.text();
                     }
-                    // 重新加载数据
-                    get_account_info();
-                }else{
-                    show_message(data);
-                }
-            }).catch((err) => {
-                console.log(err);
-            });
-        }else{
-            console.log('取消删除');
-            show_message('取消删除');
-            return;
-        }
-    }
-}
-
-function retain(){
-    let retain_accounts = get_select_tags();
-    // 如果retain_accounts为空，则发出提示
-    if (retain_accounts == '') {
-        alert('请选择要保留的账号');
-        return;
-    }else{
-        fetch('/api/az_account', {
-            method: 'PUT',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({retain_accounts: retain_accounts}),
-        }).then((response) => {
-            // 如果返回状态码为200，表示请求成功
-            if (response.status === 200) {
-                var json = response.json();
-                return json;
-            }else {
-                // 否则，返回错误信息
-                return response.text();
-            }
-        }).then((data) => {
-            // 如果返回的是JSON数据，表示请求成功
-            if (typeof(data) === 'object') {
-                // 清除表格中的数据(除了表头)
-                // table = document.getElementById('account_info');
-                // while (table.rows.length > 1) {
-                //     table.deleteRow(1);
-                // }
-                // 重新加载数据
-                get_account_info();
-                show_message('保留成功');
-            }else{
-                show_message(data);
+                }).then((data) => {
+                    // 如果返回的是JSON数据，表示请求成功
+                    if (typeof (data) === 'object') {
+                        Swal.update({
+                            title: '成功',
+                            text: data.msg,
+                            icon: 'success',
+                            confirmButtonText: '确认'
+                        }).then(() => {
+                            // 清除表格中的数据(除了表头)
+                            table = document.getElementById('account_info');
+                            while (table.rows.length > 1) {
+                                table.deleteRow(1);
+                            }
+                            // 重新加载数据
+                            get_account_info();
+                        });
+                    } else {
+                        Swal.update({
+                            title: '错误',
+                            text: data,
+                            icon: 'error',
+                            confirmButtonText: '确认'
+                        });
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                });
+            } else {
+                console.log('取消删除');
+                Swal.fire({
+                    title: '取消删除',
+                    text: '已取消删除',
+                    icon: 'info',
+                    confirmButtonText: '确认'
+                });
+                return;
             }
         }).catch((err) => {
             console.log(err);
@@ -91,7 +89,76 @@ function retain(){
     }
 }
 
-function refreshAccount(){
+function retain() {
+    let retain_accounts = get_select_tags();
+    // 如果retain_accounts为空，则发出提示
+    if (retain_accounts == '') {
+        Swal.fire({
+            title: '错误',
+            text: '请选择要保留的账号',
+            icon: 'error',
+            confirmButtonText: '确认'
+        })
+        return;
+    } else {
+        Swal.fire({
+            title: '正在进行',
+            text: `正在保留账号${retain_accounts}，不要刷新。。。`,
+            icon: 'info',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+        });
+
+        fetch('/api/az_account', {
+            method: 'PUT',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ retain_accounts: retain_accounts }),
+        }).then((response) => {
+            // 如果返回状态码为200，表示请求成功
+            if (response.status === 200) {
+                var json = response.json();
+                return json;
+            } else {
+                // 否则，返回错误信息
+                return response.text();
+            }
+        }).then((data) => {
+            // 如果返回的是JSON数据，表示请求成功
+            if (typeof (data) === 'object') {
+                // 清除表格中的数据(除了表头)
+                // table = document.getElementById('account_info');
+                // while (table.rows.length > 1) {
+                //     table.deleteRow(1);
+                // }
+                // 重新加载数据
+                get_account_info();
+                Swal.update({
+                    title: '成功',
+                    text: data.msg,
+                    icon: 'success',
+                    confirmButtonText: '确认',
+                    showConfirmButton: true,
+                });
+            } else {
+                Swal.update({
+                    title: '错误',
+                    text: data,
+                    icon: 'error',
+                    confirmButtonText: '确认',
+                    showConfirmButton: true,
+                });
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+}
+
+function refreshAccount() {
     // 找到表
     table = document.getElementById('account_info');
     // 清除表格中的数据(除了表头)
@@ -101,7 +168,7 @@ function refreshAccount(){
     get_account_info()
 }
 
-function get_select_tags(select_all = false){
+function get_select_tags(select_all = false) {
     let container = document.getElementById('az_account');
     // 找到container下所有的input元素
     var inputs = container.getElementsByTagName('input');
@@ -111,7 +178,7 @@ function get_select_tags(select_all = false){
             if (inputs[i].type == 'checkbox') {
                 tags.push(inputs[i].value);
             }
-        }else{
+        } else {
             if (inputs[i].type == 'checkbox' && inputs[i].checked) {
                 tags.push(inputs[i].value);
             }
@@ -120,27 +187,43 @@ function get_select_tags(select_all = false){
     return tags.join(',');
 }
 
-async function checkPreview(){
+async function checkPreview() {
     let preview_tags = get_select_tags();
     // 如果preview_tags为空, 则发出提示
     if (preview_tags == '') {
-        if(!confirm('你没有选择任何账号，将检查所有账号，确定要继续吗？')) {
-            return;
-        }
-        let all_tags = get_select_tags(true);
-        preview_tags = all_tags;
+        Swal.fire({
+            title: '警告',
+            text: '你没有选择任何账号，将检查所有账号，确定要继续吗？',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '确认',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                return;
+            }
+            let all_tags = get_select_tags(true);
+            preview_tags = all_tags;
+        });
     }
 
     // 如果大于1个账号，则发出提示
     if (preview_tags) {
         for (let tag of preview_tags.split(',')) {
-            if(tag == '') continue;
+            if (tag == '') continue;
             await checkPreviewSingle(tag);
         }
     }
 
     async function checkPreviewSingle(tag) {
-        show_message(`检查${tag}中，不要刷新。。。`)
+        Swal.fire({
+            title: '正在检查',
+            text: `正在检查账号${tag}，不要刷新。。。`,
+            icon: 'info',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+        });
         // 发送请求
         await fetch('/api/az_account/preview', {
             method: 'POST',
@@ -148,32 +231,47 @@ async function checkPreview(){
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({preview_tag: tag}),
+            body: JSON.stringify({ preview_tag: tag }),
         }).then((response) => {
             // 如果返回状态码为200，表示请求成功
             if (response.status === 200) {
                 var json = response.json();
                 return json;
-            }else {
+            } else {
                 // 否则，返回错误信息
                 return response.text();
             }
-        }).then((data) => {
+        }).then(async (data) => {
             // 如果返回的是JSON数据，表示请求成功
-            if (typeof(data) === 'object') {
+            if (typeof (data) === 'object') {
                 // 如果检查成功
                 if (data.code == 1) {
                     // 显示检查结果
-                    alert(data.msg);
-                }else{
+                    await Swal.fire({
+                        title: '成功',
+                        text: `${tag}: ${data.msg}`,
+                        icon: 'success',
+                        confirmButtonText: '确认',
+                        showConfirmButton: true,
+                    });
+                } else {
                     // 显示检查结果
-                    alert(data.msg);
+                    await Swal.fire({
+                        title: '错误',
+                        text: `${tag}: ${data.msg}`,
+                        icon: 'error',
+                        confirmButtonText: '确认',
+                        showConfirmButton: true,
+                    });
                 }
-            }else{
-                alert(data);
-                // 刷新数据
-                refreshAccount();
-
+            } else {
+                await Swal.fire({
+                    title: '错误',
+                    text: data,
+                    icon: 'error',
+                    confirmButtonText: '确认',
+                    showConfirmButton: true,
+                });
             }
         }).catch((err) => {
             console.log(err);
@@ -183,7 +281,7 @@ async function checkPreview(){
     refreshAccount();
 }
 
-async function checkAlive(){
+async function checkAlive() {
     let alive_tags = get_select_tags();
     // 如果alive_tags为空, 则发出提示
     if (alive_tags == '') {
@@ -196,14 +294,21 @@ async function checkAlive(){
 
     if (alive_tags) {
         for (let tag of alive_tags.split(',')) {
-            if(tag == '') continue;
+            if (tag == '') continue;
             await checkAliveSingle(tag);
         }
     }
 
     // 单个账号检查函数
     async function checkAliveSingle(tag) {
-        show_message(`检查${tag}中，不要刷新。。。`)
+        Swal.fire({
+            title: '正在检查',
+            text: `正在检查账号${tag}，不要刷新。。。`,
+            icon: 'info',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+        });
         // 发送请求
         await fetch('/api/az_account/alive', {
             method: 'POST',
@@ -211,31 +316,39 @@ async function checkAlive(){
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({alive_tag: tag}),
+            body: JSON.stringify({ alive_tag: tag }),
         }).then((response) => {
             // 如果返回状态码为200，表示请求成功
             if (response.status === 200) {
                 var json = response.json();
                 return json;
-            }else {
+            } else {
                 // 否则，返回错误信息
                 return response.text();
             }
-        }).then((data) => {
+        }).then(async (data) => {
             // 如果返回的是JSON数据，表示请求成功
-            if (typeof(data) === 'object') {
+            if (typeof (data) === 'object') {
                 // 如果检查成功
                 if (data.code == 1) {
                     // 显示检查结果
-                    alert(data.msg);
-                }else{
+                    await Swal.fire({
+                        title: '成功',
+                        text: `${tag}: ${data.msg}`,
+                        icon: 'success',
+                        confirmButtonText: '确认',
+                        showConfirmButton: true,
+                    });
+                } else {
                     // 显示检查结果
-                    alert(data.msg);
+                    await Swal.fire({
+                        title: '错误',
+                        text: `${tag}: ${data.msg}`,
+                        icon: 'error',
+                        confirmButtonText: '确认',
+                        showConfirmButton: true,
+                    });
                 }
-            }else{
-                alert(data);
-                // 刷新数据
-                refreshAccount();
             }
         }).catch((err) => {
             console.log(err);
@@ -246,16 +359,26 @@ async function checkAlive(){
     refreshAccount();
 }
 
-function apply(){
+function apply() {
     let apply_tags = get_select_tags();
     // 如果apply_tags为空, 则发出提示
     if (apply_tags == '') {
-        alert('请选择要申请权限的账号');
+        Swal.fire({
+            title: '错误',
+            text: '请选择要申请的账号',
+            icon: 'error',
+            confirmButtonText: '确认'
+        })
         return;
     }
     // 如果大于1个账号，则发出提示
     if (apply_tags.split(',').length > 1) {
-        alert('放过我吧，一次只能申请一个账号');
+        Swal.fire({
+            title: '错误',
+            text: '一次只能申请一个账号',
+            icon: 'error',
+            confirmButtonText: '确认'
+        })
         return;
     }
     show_message('申请中，不要刷新。。。')
@@ -272,28 +395,38 @@ function apply(){
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({apply_tag: apply_tags, mail: email}),
+        body: JSON.stringify({ apply_tag: apply_tags, mail: email }),
     }).then((response) => {
         // 如果返回状态码为200，表示请求成功
         if (response.status === 200) {
             var json = response.json();
             return json;
-        }else {
+        } else {
             // 否则，返回错误信息
             return response.text();
         }
     }).then((data) => {
         // 如果返回的是JSON数据，表示请求成功
-        if (typeof(data) === 'object') {
+        if (typeof (data) === 'object') {
             // 如果检查成功
             if (data.code == 1) {
                 // 显示检查结果
-                alert(data.msg);
-            }else{
+                Swal.fire({
+                    title: '成功',
+                    text: data.msg,
+                    icon: 'success',
+                    confirmButtonText: '确认'
+                })
+            } else {
                 // 显示检查结果
-                alert(data.msg);
+                Swal.fire({
+                    title: '错误',
+                    text: data.msg,
+                    icon: 'error',
+                    confirmButtonText: '确认'
+                })
             }
-        }else{
+        } else {
             alert(data);
         }
     }).catch((err) => {
@@ -304,13 +437,23 @@ function apply(){
 function deploy() {
     let tags = get_select_tags();
     console.log('tags: ' + tags);
-    console.log(typeof(tags));
+    console.log(typeof (tags));
     // 如果tags为空, 则发出提示
     if (tags == '') {
         // 让用户选择要不要继续
-        if(!confirm('你没有选择任何账号，将采用自动部署模式，确定要继续吗？')) {
-            return;
-        }
+        Swal.fire({
+            title: '警告',
+            text: '你没有选择任何账号，将采用自动部署模式，确定要继续吗？',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            allowOutsideClick: false,
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                return;
+            }
+        });
     }
 
     // 如果大于1个账号，则发出提示
@@ -319,7 +462,14 @@ function deploy() {
         return;
     }
 
-    show_message('部署中，不要刷新。。。')
+    Swal.fire({
+        title: '正在部署',
+        text: `正在部署账号${tags}，不要刷新。。。`,
+        icon: 'info',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+    });
     // 发送请求
     fetch('/api/az_account/deploy', {
         method: 'POST',
@@ -327,28 +477,38 @@ function deploy() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({tag: tags}),
+        body: JSON.stringify({ tag: tags }),
     }).then((response) => {
         // 如果返回状态码为200，表示请求成功
         if (response.status === 200) {
             var json = response.json();
             return json;
-        }else {
+        } else {
             // 否则，返回错误信息
             return response.text();
         }
     }).then((data) => {
         // 如果返回的是JSON数据，表示请求成功
-        if (typeof(data) === 'object') {
+        if (typeof (data) === 'object') {
             // 如果检查成功
             if (data.code == 1) {
                 // 显示检查结果
-                alert(data.msg);
-            }else{
+                Swal.fire({
+                    title: '成功',
+                    text: data.msg,
+                    icon: 'success',
+                    confirmButtonText: '确认'
+                })
+            } else {
                 // 显示检查结果
-                alert(data.msg);
+                Swal.fire({
+                    title: '错误',
+                    text: data.msg,
+                    icon: 'error',
+                    confirmButtonText: '确认'
+                })
             }
-        }else{
+        } else {
             alert(data);
         }
     }).catch((err) => {
@@ -395,13 +555,13 @@ function get_account_info() {
         if (response.status === 200) {
             var json = response.json();
             return json;
-        }else {
+        } else {
             // 否则，返回错误信息
             return response.text();
         }
     }).then((data) => {
         // 如果返回的是JSON数据，表示请求成功
-        if (typeof(data) === 'object') {
+        if (typeof (data) === 'object') {
             // 将数据缓存到localstorage中
             localStorage.setItem('account_info_cache', JSON.stringify(data));
 
@@ -412,7 +572,7 @@ function get_account_info() {
             }
 
             // 将返回的数据显示在页面上
-            for (let item of data){
+            for (let item of data) {
                 // 创建新行
                 let newRow = table.insertRow(-1);
 
@@ -436,19 +596,22 @@ function get_account_info() {
                 cell6.innerHTML = item.is_alive == '1' ? "存活" : "挂了";
 
                 let cell7 = newRow.insertCell(6);
-                if(item.mail){
+                if (item.mail) {
                     cell7.innerHTML = item.mail.replace(/"/g, '');
-                }else{
+                } else {
                     cell7.innerHTML = '未知'
                 }
 
                 let cell8 = newRow.insertCell(7);
                 cell8.innerHTML = '<input type="checkbox" value="' + item.tag + '">';
 
+                let cell9 = newRow.insertCell(8);
+                cell9.innerHTML = '<button onclick="open_in_new_window(\'' + item.tag + '\')">打开</button>';
+
                 if (item.used == '0' && item.is_alive == '1' && item.preview_available == '1') {
                     // 将背景设置为绿色
                     newRow.style.backgroundColor = '#ccffcc';
-                }else{
+                } else {
                     // 将背景设置为蓝色
                     newRow.style.backgroundColor = '#cce5ff';
                 }
@@ -463,7 +626,7 @@ function get_account_info() {
                     newRow.style.backgroundColor = '#ff6666';
                 }
             }
-            
+
             // 更新统计数据
             count_color(table);
         }
@@ -475,7 +638,7 @@ function get_account_info() {
     });
 }
 
-function count_color(table){
+function count_color(table) {
     // 更新统计数据
     let count_table = document.getElementById('account_type_count');
 
@@ -547,7 +710,7 @@ function count_color(table){
     cell5.style.backgroundColor = '#ccffcc';
 
     let newRow2 = count_table.insertRow(-1);
-    
+
     function buttomTemplate(buttomText, colourName) {
         return `<button class="btn btn-${colourName} btn-sm" type="button" onclick="filterTable('${colourName}')" style="margin: 5px;" background-color="${colourName}">${buttomText}</button>`;
     }
@@ -575,7 +738,7 @@ function filterTable(colour) {
             if (table.rows[i]['cells'][7].children[0].checked) {
                 // 取消选中所有行
                 table.rows[i]['cells'][7].children[0].checked = false;
-            }else{
+            } else {
                 // 选中所有行
                 table.rows[i]['cells'][7].children[0].checked = true;
             }
@@ -586,7 +749,7 @@ function filterTable(colour) {
             if (table.rows[i]['cells'][7].children[0].checked) {
                 // 取消选中对应颜色的行
                 table.rows[i]['cells'][7].children[0].checked = false;
-            }else{
+            } else {
                 // 选中对应颜色的行
                 table.rows[i]['cells'][7].children[0].checked = true;
             }
@@ -613,3 +776,7 @@ function filterTable(colour) {
 //     // 调用部署函数
 //     deploy(tags);
 // }
+
+function open_in_new_window(tag) {
+    window.open(`/az_portal?tag=${tag}`, '_blank', 'width=800,height=600');
+}

@@ -17,6 +17,7 @@ const oneapiRouter = require('./api/oneapi.js')(dbManager);
 const oneapiRouter2 = require('./api/oneChannels.js')(dbManager);
 const tpsRouter = require('./api/channel_tps_count.js')(dbManager);
 const configRouter = require('./api/config.js');
+const az_portalRouter = require('./api/az_portal.js')(dbManager);
 
 function auth(req, res, next) {
     const token = req.cookies.jwt;
@@ -53,6 +54,7 @@ app.use('/api/oneapi', oneapiRouter); // 使用获取oneapi信息路由
 app.use('/api/oneChannels', oneapiRouter2); // 使用获取oneapi信息路由
 app.use('/api/tps', tpsRouter); // 使用获取oneapi信息路由
 app.use('/api/config', configRouter); // 使用配置信息信息路由
+app.use('/api/az_portal', az_portalRouter); // 使用Azure Portal api路由
 
 // 为静态文件（如HTML、CSS、JavaScript文件）设置一个目录
 app.use(express.static('public'));
@@ -64,6 +66,10 @@ app.get('/', (req, res) => {
 
 app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
+});
+
+app.get('/az_portal', (req, res) => {
+  res.sendFile(__dirname + '/public/az_portal.html');
 });
 
 // 导入 WebSocket 模块并传递 io 实例

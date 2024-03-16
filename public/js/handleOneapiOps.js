@@ -105,6 +105,7 @@ function refresh(){
                 let total_weight_cell = row.insertCell();
                 let created_time_cell = row.insertCell();
                 let checkbox_cell = row.insertCell();
+
                 name_cell.innerHTML = data[i].modified_name;
                 count_cell.innerHTML = data[i].count;
                 total_used_quota_cell.innerHTML = data[i].total_used_quota;

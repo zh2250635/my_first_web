@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>azure openai portal</title>
+
+    <script src="/js/az_portal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 library -->
+  </head>
+  <body>
+    <h1>azure openai portal</h1>
+    <div id="tag"></div>
+
+    <div id="button_box">
+      <button id="add_account_button" onclick="add_account()">
+        添加account
+      </button>
+      <button id="delete_account_button" onclick="delete_account()">
+        删除选中的account
+      </button>
+      <button id="select_all_button" onclick="select_all()">全选</button>
+      <button id="unselect_all_button" onclick="unselect_all()">全不选</button>
+      <button id="check_key_button" onclick="check_key()">检查key</button>
+    </div>
+
+    <br>
+    <div id="azure_accounts">
+        <div>
+            <div>
+                <input type="checkbox">
+                <label >
+                    <span>test</span>
+                    <div>
+                        <button onclick="clicked_account(this)" style="display: none;">点击</button>
+                        <script>
+                            function clicked_account(button) {
+                                console.log(button.parentElement.parentElement.querySelector('span').innerText);
+                            }
+                        </script>
+                    </div>
+                </label>
+            </div>
+            <div>
+                2333
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

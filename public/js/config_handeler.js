@@ -15,10 +15,22 @@ function submitConfigForm() {
     let json = JSON.stringify(object);
     sentConfigData(json)
         .then(data => {
+            Swal.fire({
+                title: '成功',
+                text: '配置文件已更新',
+                icon: 'success',
+                confirmButtonText: '确认'
+            });
             loadConfigData(data.data);
         })
         .catch(error => {
             console.error('Error fetching config:', error);
+            Swal.fire({
+                title: '错误',
+                text: '配置文件更新失败，错误信息：' + error,
+                icon: 'error',
+                confirmButtonText: '确认'
+            });
         });
 }
 

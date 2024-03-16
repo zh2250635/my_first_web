@@ -23,6 +23,7 @@ function load_oneapi_channels() {
         let total_weight_cell = row.insertCell();
         let created_time_cell = row.insertCell();
         let checkbox_cell = row.insertCell();
+
         name_cell.innerHTML = data[i].modified_name;
         count_cell.innerHTML = data[i].count;
         total_used_quota_cell.innerHTML = data[i].total_used_quota;
@@ -82,6 +83,9 @@ function load_account_info() {
 
         let cell8 = newRow.insertCell(7);
         cell8.innerHTML = '<input type="checkbox" value="' + item.tag + '">';
+
+        let cell9 = newRow.insertCell(8);
+        cell9.innerHTML = '<button onclick="open_in_new_window(\'' + item.tag + '\')">查看</button>';
 
         if (item.used == '0' && item.is_alive == '1' && item.preview_available == '1') {
             // 将背景设置为绿色
