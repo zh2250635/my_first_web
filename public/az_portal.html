@@ -8,12 +8,62 @@
     <script src="/js/az_portal.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- SweetAlert2 library -->
+    <style>
+      body {
+        background-color: #f0f0f0;
+      }
+      h1{
+        text-align: center;
+      }
+      p{
+        text-align: center;
+      }
+      .display_none_button {
+        display: none;
+      }
+      .display_none_span {
+        display: none;
+      }
+      .az_portal_account_info {
+        display: flex;
+        justify-content: space-between;
+        max-width: 600px;
+      }
+      .deployments_info {
+        display: flex;
+        justify-content: space-between;
+        max-width: 600px;
+      }
+      .az_portal_account_box {
+        border: 1px solid black;
+        margin: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: inset 0 0 10px #d1d6a0, 0 0 10px rgba(0, 0, 0, 0.5); /* 添加外阴影 */
+        background-image: linear-gradient(
+          to right,
+          #b2c79c,
+          #d1d6a0
+        ); /* 修改背景为渐变色 */
+      }
+      .az_portal_deployment_box{
+        margin: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: inset 0 0 10px #d1d6a0, 0 0 10px rgba(0, 0, 0, 0.5); /* 添加外阴影 */
+      }
+      .az_portal_deployment_box > div > span{
+        /* 添加边框 */
+        border: 1px solid #d1d6a0;
+        margin: 2px;
+      }
+    </style>
   </head>
   <body>
     <h1>azure openai portal</h1>
     <div id="tag"></div>
 
-    <div id="button_box">
+    <div id="button_box" style="text-align: center;">
       <button id="add_account_button" onclick="add_account()">
         添加account
       </button>
@@ -25,27 +75,36 @@
       <button id="check_key_button" onclick="check_key()">检查key</button>
     </div>
 
-    <br>
+    <br />
     <div id="azure_accounts">
-        <div>
-            <div>
-                <input type="checkbox">
-                <label >
-                    <span>test</span>
-                    <div>
-                        <button onclick="clicked_account(this)" style="display: none;">点击</button>
-                        <script>
-                            function clicked_account(button) {
-                                console.log(button.parentElement.parentElement.querySelector('span').innerText);
-                            }
-                        </script>
-                    </div>
-                </label>
-            </div>
-            <div>
-                2333
-            </div>
+      <div class="az_portal_account_box" style="display: none;">
+        <div class="az_portal_account_info">
+          <input type="checkbox" />
+          <label class="az_portal_account_info_lable">
+            <span class="account_name">test</span>
+            <button onclick="clicked_account(this)" class="display_none_button">
+              点击
+            </button>
+          </label>
+          <span class="az_portal_sub_id display_none_span"> a-v-s-f </span>
+          <span class="az_portal_resourse_group">openai</span>
+          <span class="account_action_box">
+            <button class="account_action_button">删除</button>
+            <button class="account_action_button">添加新的部署</button>
+          </span>
         </div>
+        <div class="az_portal_account_deployments">
+          <div class="deployments_info">
+            <span class="deployment_name">d1</span>
+            <span class="deployment_sku">s1</span>
+            <span class="deployment_model">m1</span>
+            <span class="deployment_button_box">
+              <button class="deployment_action_button">删除</button>
+              <button class="deployment_action_button">修改</button>
+          </div>
+          <div class="deployments_info">d2</div>
+        </div>
+      </div>
     </div>
   </body>
 </html>

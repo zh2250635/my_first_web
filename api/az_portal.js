@@ -76,15 +76,17 @@ module.exports = (dbManager) => {
 
                 // 获取deployments
                 let fetchUrl = `https://management.azure.com/subscriptions/${sub_id}/resourceGroups/${resource_group}/providers/Microsoft.CognitiveServices/accounts/${account_name}/deployments?api-version=2023-10-01-preview`;
+
                 fetch(fetchUrl, {
                     method: 'GET',
                     headers: {
                         'authorization': `Bearer ${token}`
                     }
-                }).then(response => {
+                }).then(async (response) => {
                     if (response.status === 200) {
                         return response.json();
                     } else {
+                        console.log(await response.text());
                         throw new Error(`Failed to fetch deployments: ${response.status}`);
                     }
                 }).then(data => {
@@ -92,7 +94,7 @@ module.exports = (dbManager) => {
                     res.end();
                 }).catch(error => {
                     console.error(error);
-                    res.status(500).send(error);
+                    res.status(500).json({ error: error, fetchUrl: fetchUrl });
                 });
             })
             .catch((error) => {
