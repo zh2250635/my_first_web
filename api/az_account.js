@@ -265,7 +265,11 @@ module.exports = (dbManager) => {
         let data = {
             'source': process.env.SOURCE,
             tag,
-            'onetoken': process.env.ONEAPI_TOKEN
+            'onetoken': process.env.ONEAPI_TOKEN,
+            'oneapi_url_2': process.env.ONEAPI_URL_2 || 'null',
+            'oneapi_token_2': process.env.ONEAPI_TOKEN_2 || 'null',
+            'script_name': process.env.SCRIPT_NAME || 'all-alpha.zh',
+            'input_forward_url_2': process.env.INPUT_FORWARD_URL_2 || 'null',
         }
 
         let response = await fetch(fetchUrl, {
