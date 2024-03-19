@@ -1,5 +1,11 @@
 let params = {};
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
+    await Swal.fire({
+        title: '警告',
+        text: '功能开发中，请谨慎使用',
+        icon: 'warning',
+        confirmButtonText: '确定'
+    });
     // 把页面的url的查询参数转换为对象
     params = get_params();
     // 如果没有tag参数，表示没有选择通道
@@ -147,9 +153,9 @@ function account_template(account) {
         <span class="az_portal_location display_none_span">${account.location}</span>
         <span class="az_portal_account_location_display display_none_span">${account.locationDisplayName}</span>
         <span class="account_action_box">
-        <button class="account_action_button">删除</button>
-        <button class="account_action_button">添加新的部署</button>
-        <button class="account_action_button">显示已存在的部署</button>
+            <button class="account_action_button" onclick="delete_account(this)">删除</button>
+            <button class="account_action_button">添加新的部署</button>
+            <button class="account_action_button" onclick="show_existed_deployments(this)">显示已存在的部署</button>
         </span>
     </div>
     <div class="az_portal_account_deployments" id="deployments_${account.name}">
@@ -217,7 +223,7 @@ async function load_deployments(sub_id, resource_group, account_name) {
                 confirmButtonText: '确定'
             })
         });
-        console.log(JSON.stringify(deployments));
+    console.log(JSON.stringify(deployments));
     return deployments;
 }
 
@@ -246,4 +252,191 @@ function deployment_template(deployment) {
     </div>
     `;
 }
+
+function show_existed_deployments(element) {
+    console.log('show_existed_deployments');
+    // 在这里 'element' 将是按钮自身，因此我们使用它来找到父元素，然后找到label
+    const label = element.parentElement.parentElement.querySelector('label');
+    if (label) {
+        label.click(); // 触发label的点击事件
+    } else {
+        console.log('label not found');
+    }
+}
+
+function delete_account(button) {
+    let account_name =
+        button.parentElement.parentElement.querySelector(
+            ".account_name"
+        ).innerText;
+
+    let sub_id =
+        button.parentElement.parentElement.parentElement.querySelector(
+            ".az_portal_sub_id"
+        ).innerText;
+
+    let resourse_group =
+        button.parentElement.parentElement.parentElement.querySelector(
+            ".az_portal_resourse_group"
+        ).innerText;
+
+    let location =
+        button.parentElement.parentElement.parentElement.querySelector(
+            ".az_portal_location"
+        ).innerText;
+    
+    console.log(`sub_id: ${sub_id}`);
+    console.log(`account_name: ${account_name}`);
+    console.log(`resourse_group: ${resourse_group}`);
+    console.log(`location: ${location}`);
+    Swal.fire({
+        title: '删除账号',
+        text: `你确定要删除账号 ${account_name} 吗？`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            delete_account_request(sub_id, account_name, resourse_group, location)
+                .then((response) => {
+                    if (response.status === 200) {
+                        Swal.fire({
+                            title: '账号删除成功',
+                            text: '账号删除成功',
+                            icon: 'success',
+                            confirmButtonText: '确定',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: '错误',
+                            text: '删除账号失败',
+                            icon: 'error',
+                            confirmButtonText: '确定',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    Swal.fire({
+                        title: '错误',
+                        text: '删除账号失败',
+                        icon: 'error',
+                        confirmButtonText: '确定',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    });
+                });
+        }
+    });
+}
+
+async function delete_account_request(sub_id, account_name, resourse_group, location) {
+    let response = await fetch(`/api/az_portal/cognitive_services_account?tag=${params.tag}&sub_id=${sub_id}&name=${account_name}&resource_group=${resourse_group}&location=${location}`, {
+        method: 'DELETE'
+    });
+    return response;
+}
+
+async function add_account(){
+    Swal.fire({
+        title: '正在加载信息',
+        text: '请稍等...',
+        icon: 'info',
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    });
+    let sub_ids = await get_sub_ids();
+    Swal.fire({
+        title: '填写信息',
+        html: `
+        <input type="text" id="account_name" placeholder="账号名称" />
+        <select id="sub_id">
+            <option value="">选择订阅</option>
+            ${sub_ids.map(sub_id => `<option value="${sub_id}">${sub_id}</option>`)}
+        </select>
+        <input type="text" id="resourse_group" placeholder="资源组" />
+        <input type="text" id="location" placeholder="位置" />
+        </form>
+        `,
+        showConfirmButton: true,
+        confirmButtonText: '确定',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+        console.log(result);
+        
+        // 打印填写的表单
+        console.log(document.getElementById('account_name').value);
+        console.log(document.getElementById('sub_id').value);
+        console.log(document.getElementById('resourse_group').value);
+        console.log(document.getElementById('location').value);
+
+        let account_name = document.getElementById('account_name').value;
+        let sub_id = document.getElementById('sub_id').value;
+        let resourse_group = document.getElementById('resourse_group').value;
+        let location = document.getElementById('location').value;
+
+        if (!account_name || !sub_id || !resourse_group || !location) {
+            Swal.fire({
+                title: '错误',
+                text: '请填写所有信息',
+                icon: 'error',
+                confirmButtonText: '确定',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
+            return;
+        }
+
+        add_account_request(sub_id, account_name, resourse_group, location)
+    });
+}
+
+async function get_sub_ids() {
+    let sub_ids = await fetch(`/api/az_portal/subscriptions?tag=${params.tag}`)
+        .then(response => {
+            if (!response.ok) {
+                console.log(response);
+                throw new Error(`Failed to fetch subscriptions: ${response.status}`);
+            }
+            return response.json()
+        })
+        .then(data => {
+            return data;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    return sub_ids;
+}
+
+async function add_account_request(sub_id, account_name, resourse_group, location) {
+    let body = {
+        tag: params.tag,
+        sub_id: sub_id,
+        name: account_name,
+        resource_group_name: resourse_group,
+        location: location
+    };
+    let response = await fetch(`/api/az_portal/cognitive_services_account`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    console.log(response.json());
+    return response;
+}
+
 // Path: public/js/az_portal.js

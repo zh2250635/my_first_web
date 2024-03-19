@@ -144,6 +144,40 @@ module.exports = (dbManager) => {
             });
     });
 
+    router.get('/subscriptions', async (req, res) => {
+        // 获取请求传入的查询
+        let query = req.query;
+        // 获取请求的账号tag
+        let tag = query?.tag;
+        if (!tag) {
+            res.status(400).send("Bad Request: tag is required");
+            return;
+        }
+
+        // 获取账号信息
+        sql = `SELECT * FROM rbac WHERE tag = '${tag}'`;
+        dbManager.run('az_accounts', sql)
+            .then(async (results) => {
+                if (results.length === 0) {
+                    res.status(404).send("Not Found: account not found");
+                    return;
+                }
+
+                let account = results[0];
+                // 获取账号的cognitive services
+                let subscription_ids = account.sub_ids.trim().split(' ');
+
+                res.status(200).send(subscription_ids);
+                res.end();
+                return;
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send(error);
+            });
+
+    });
+
     router.delete('/deployments', async (req, res) => {
         // 获取请求传入的查询
         let query = req.query;
@@ -190,7 +224,7 @@ module.exports = (dbManager) => {
         let body = req.body;
 
         if (!body.tag || !body.name || !body.location || !body.sub_id) {
-            res.status(400).send("Bad Request: 你必须提供账号的tag和cognitive service的name, 以及subscription id和location");
+            res.status(400).json({ error: true, message: `Bad Request: 你必须提供 tag, name, location, sub_id, 你提供了 ${JSON.stringify(body)}` });
             return;
         }
 
