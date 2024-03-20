@@ -69,12 +69,7 @@
             <form action="/api/oneapi" method="post" name="oneapi_form">
                 <div>
                     <label for="oneapi" style="width: 100px;">模型:</label>
-                    <select id="oneapi" name="oneapi" required>
-                        <option value="gpt-4-32k-1106-preview" selected>gpt-4-32k-1106-preview</option>
-                        <option value="gpt-4-32k">gpt-4</option>
-                        <option value="gpt-4-32k">gpt-4-32k</option>
-                        <option value="gpt-3.5-turbo">gpt-3.5-turbo-16k</option>
-                    </select>
+                    <input type="text" list="models-list" id="oneapi" name="oneapi" required>
                     <button type="submit">查询</button>
                 </div>
             </form>
@@ -188,6 +183,7 @@
                 <label for="tps-detail-model">模型:</label>
                 <input list = "models-list" id="tps-detail-model-input" name="tps-detail-model" required> 
                     <datalist id="models-list">
+                        <option value="gpt-4-1106-preview"></option>
                         <option value="gpt-4-32k-1106-preview">
                         <option value="gpt-4-32k">
                         <option value="gpt-3.5-turbo">
