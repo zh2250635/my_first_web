@@ -103,6 +103,43 @@ module.exports = (dbManager) => {
             });
     });
 
+    router.get('/account_token', async (req, res) => {
+        // 获取请求传入的查询
+        let query = req.query;
+        // 获取请求的账号tag
+        let tag = query?.tag;
+        if (!tag) {
+            res.status(400).send("Bad Request: tag is required");
+            return;
+        }
+
+        // 获取账号信息
+        sql = `SELECT * FROM rbac WHERE tag = '${tag}'`;
+        dbManager.run('az_accounts', sql)
+            .then(async (results) => {
+                if (results.length === 0) {
+                    res.status(404).send("Not Found: account not found");
+                    return;
+                }
+
+                let account = results[0];
+                // 获取账号的登录信息
+                let info = JSON.parse(account.info);
+                let credential = new ClientSecretCredential(info.tenant, info.appId, info.password);
+
+                // 获取token
+                const token = (await credential.getToken("https://management.azure.com/.default")).token;
+
+                res.status(200).json({ token: token });
+                res.end();
+                return;
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send(error);
+            });
+    });
+
     router.delete('/cognitive_services_account', async (req, res) => {
         // 获取请求传入的查询
         let query = req.query;
